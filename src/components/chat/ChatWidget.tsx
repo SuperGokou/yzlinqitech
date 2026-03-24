@@ -270,7 +270,7 @@ export default function ChatWidget() {
               {messages.map((msg, i) => (
                 <div
                   key={i}
-                  className={`flex ${
+                  className={`flex items-start ${
                     msg.role === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
@@ -280,7 +280,7 @@ export default function ChatWidget() {
                       alt="Bot"
                       width={24}
                       height={24}
-                      className="rounded-md mr-2 mt-1 shrink-0"
+                      className="w-6 h-6 rounded-md mr-2 mt-1 shrink-0 object-cover"
                     />
                   )}
                   <div
