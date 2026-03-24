@@ -104,6 +104,7 @@ export default function RootLayout({
             }),
           }}
         />
+        <script dangerouslySetInnerHTML={{ __html: `if(history.scrollRestoration)history.scrollRestoration="manual"` }} />
         {children}
       </body>
     </html>
