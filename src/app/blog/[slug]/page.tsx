@@ -1,6 +1,7 @@
 "use client";
 
 import { use } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { notFound } from "next/navigation";
 import { LocaleProvider, useLocale } from "@/contexts/LocaleContext";
@@ -25,12 +26,12 @@ function ArticleContent({ slug }: { slug: string }) {
             <motion.div variants={staggerContainer} initial="hidden" animate="visible">
               {/* Back link */}
               <motion.div variants={fadeInUp} className="mb-10">
-                <a href="/blog" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-neon-cyan transition-colors duration-200">
+                <Link href="/blog" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-neon-cyan transition-colors duration-200">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
                   </svg>
                   {locale === "zh" ? "返回博客" : "Back to Blog"}
-                </a>
+                </Link>
               </motion.div>
 
               {/* Header */}
@@ -161,18 +162,18 @@ function ArticleContent({ slug }: { slug: string }) {
 
               {/* Footer */}
               <motion.div variants={fadeInUp} className="mt-16 pt-8 border-t border-border-subtle flex items-center justify-between">
-                <a href="/blog" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-neon-cyan transition-colors duration-200">
+                <Link href="/blog" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-neon-cyan transition-colors duration-200">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
                   </svg>
                   {locale === "zh" ? "返回博客" : "Back to Blog"}
-                </a>
-                <a href="#chat-demo" className="inline-flex items-center gap-2 text-sm text-neon-cyan/70 hover:text-neon-cyan transition-colors duration-200">
+                </Link>
+                <Link href="/#chat-demo" className="inline-flex items-center gap-2 text-sm text-neon-cyan/70 hover:text-neon-cyan transition-colors duration-200">
                   {locale === "zh" ? "有问题？问 AI" : "Questions? Ask AI"}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
                   </svg>
-                </a>
+                </Link>
               </motion.div>
             </motion.div>
           </div>

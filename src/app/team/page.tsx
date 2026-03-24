@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { LocaleProvider, useLocale } from "@/contexts/LocaleContext";
 import Navbar from "@/components/sections/Navbar";
@@ -346,12 +347,12 @@ function TeamPageContent() {
               >
                 {team.ctaPrimary}
               </a>
-              <a
+              <Link
                 href="/"
                 className="inline-flex items-center justify-center px-8 py-3 rounded-lg font-medium text-sm border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-strong transition-all duration-200"
               >
                 {team.ctaSecondary}
-              </a>
+              </Link>
             </div>
           </motion.div>
         </section>

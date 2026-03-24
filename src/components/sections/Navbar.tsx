@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/contexts/LocaleContext";
 import { fadeInDown, springs } from "@/lib/motion";
@@ -16,9 +18,22 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const { t, toggleLocale } = useLocale();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+
+  /** On the home page, smooth-scroll to hash targets without changing the URL. */
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent, href: string) => {
+      const hash = href.split("#")[1];
+      if (hash && pathname === "/") {
+        e.preventDefault();
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    [pathname],
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -98,7 +113,7 @@ export default function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-14">
           {/* Brand */}
-          <a href="#" className="flex items-center gap-3 shrink-0 group">
+          <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="relative w-9 h-9 overflow-hidden rounded-lg ring-1 ring-neon-cyan/20 group-hover:ring-neon-cyan/50 group-hover:shadow-glow-cyan-sm transition-all duration-300">
               <Image
                 src="/logo.avif"
@@ -112,14 +127,15 @@ export default function Navbar() {
             <span className="font-display text-base font-bold tracking-widest uppercase text-glow-cyan text-neon-cyan">
               软件加工厂
             </span>
-          </a>
+          </Link>
 
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-1">
             {NAV_LINKS.map((link) => (
-              <a
+              <Link
                 key={link.key}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="relative px-4 py-2 text-sm font-display font-medium uppercase tracking-wider transition-colors duration-200 group"
                 style={{
                   color: isActive(link.key) ? "#00e5ff" : "var(--text-secondary)",
@@ -145,7 +161,7 @@ export default function Navbar() {
                     boxShadow: isActive(link.key) ? "0 0 8px rgba(0,229,255,0.5)" : "none",
                   }}
                 />
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -171,8 +187,9 @@ export default function Navbar() {
             <div className="hidden sm:block w-px h-5 bg-white/10" />
 
             {/* CTA */}
-            <a
+            <Link
               href="/#chat-demo"
+              onClick={(e) => handleNavClick(e, "/#chat-demo")}
               className="hidden sm:inline-flex items-center gap-2 px-6 py-2.5 text-sm font-display font-bold uppercase tracking-wider rounded-lg transition-all duration-300"
               style={{
                 color: "#050a15",
@@ -190,7 +207,7 @@ export default function Navbar() {
               }}
             >
               {t.nav.cta}
-            </a>
+            </Link>
 
             {/* Hamburger */}
             <button
@@ -261,30 +278,33 @@ export default function Navbar() {
               {/* Links */}
               <nav className="flex flex-col px-8">
                 {NAV_LINKS.map((link, i) => (
-                  <motion.a
+                  <motion.div
                     key={link.key}
-                    href={link.href}
-                    onClick={closeMobile}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + i * 0.05, duration: 0.3 }}
-                    className="py-4 text-lg font-display font-medium tracking-wider transition-colors duration-200"
-                    style={{
-                      color: "var(--text-secondary)",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.color = "#00e5ff";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-                    }}
                   >
-                    <span className="font-mono text-xs mr-4" style={{ color: "var(--text-muted)" }}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {navLabels[link.key]}
-                  </motion.a>
+                    <Link
+                      href={link.href}
+                      onClick={(e) => { handleNavClick(e, link.href); closeMobile(); }}
+                      className="block py-4 text-lg font-display font-medium tracking-wider transition-colors duration-200"
+                      style={{
+                        color: "var(--text-secondary)",
+                        borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = "#00e5ff";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+                      }}
+                    >
+                      <span className="font-mono text-xs mr-4" style={{ color: "var(--text-muted)" }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {navLabels[link.key]}
+                    </Link>
+                  </motion.div>
                 ))}
               </nav>
 
@@ -300,9 +320,9 @@ export default function Navbar() {
                 >
                   {t.nav.langToggle === "EN" ? "Switch to English" : "切换到中文"}
                 </button>
-                <a
+                <Link
                   href="/#chat-demo"
-                  onClick={closeMobile}
+                  onClick={(e) => { handleNavClick(e, "/#chat-demo"); closeMobile(); }}
                   className="flex items-center justify-center px-6 py-3 text-sm font-display font-bold uppercase tracking-wider rounded-lg transition-all duration-300"
                   style={{
                     color: "#050a15",
@@ -310,7 +330,7 @@ export default function Navbar() {
                   }}
                 >
                   {t.nav.cta}
-                </a>
+                </Link>
               </div>
             </motion.div>
           </>

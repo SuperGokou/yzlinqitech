@@ -1,7 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, useInView } from "framer-motion";
 import { useLocale } from "@/contexts/LocaleContext";
 
@@ -35,6 +37,18 @@ function Reveal({
 
 export default function Footer() {
   const { t, locale } = useLocale();
+  const pathname = usePathname();
+
+  const handleHashClick = useCallback(
+    (e: React.MouseEvent, href: string) => {
+      const hash = href.split("#")[1];
+      if (hash && pathname === "/") {
+        e.preventDefault();
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    [pathname],
+  );
 
   const resourceLinks = locale === "zh"
     ? [
@@ -117,6 +131,7 @@ export default function Footer() {
                   </a>
                   <a
                     href="#chat-demo"
+                    onClick={(e) => { e.preventDefault(); document.getElementById("chat-demo")?.scrollIntoView({ behavior: "smooth" }); }}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium text-text-secondary border border-border-strong hover:border-neon-cyan/30 hover:text-neon-cyan transition-all duration-300"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -217,7 +232,7 @@ export default function Footer() {
               <ul className="space-y-1.5">
                 {resourceLinks.map((link) => (
                   <li key={link.href}>
-                    <a href={link.href} className="text-xs text-text-secondary hover:text-neon-cyan transition-colors duration-200">{link.label}</a>
+                    <Link href={link.href} onClick={(e) => handleHashClick(e, link.href)} className="text-xs text-text-secondary hover:text-neon-cyan transition-colors duration-200">{link.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -233,7 +248,7 @@ export default function Footer() {
                   { label: t.footer.careers, href: "/careers" },
                 ].map((link) => (
                   <li key={link.href}>
-                    <a href={link.href} className="text-xs text-text-secondary hover:text-neon-cyan transition-colors duration-200">{link.label}</a>
+                    <Link href={link.href} className="text-xs text-text-secondary hover:text-neon-cyan transition-colors duration-200">{link.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -257,8 +272,8 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} {t.footer.copyright}. {t.footer.allRights}.
             </p>
             <div className="flex items-center gap-5">
-              <a href="/privacy" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors duration-200">{t.footer.privacy}</a>
-              <a href="/terms" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors duration-200">{t.footer.terms}</a>
+              <Link href="/privacy" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors duration-200">{t.footer.privacy}</Link>
+              <Link href="/terms" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors duration-200">{t.footer.terms}</Link>
             </div>
           </div>
         </div>

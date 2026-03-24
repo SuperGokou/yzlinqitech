@@ -253,6 +253,7 @@ export default function HeroSection() {
               {/* Primary CTA */}
               <a
                 href="#chat-demo"
+                onClick={(e) => { e.preventDefault(); document.getElementById("chat-demo")?.scrollIntoView({ behavior: "smooth" }); }}
                 className="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-display font-bold tracking-wide rounded-md transition-all duration-300"
                 style={{
                   color: "#050a15",
@@ -289,6 +290,7 @@ export default function HeroSection() {
               {/* Secondary CTA */}
               <a
                 href="#portfolio"
+                onClick={(e) => { e.preventDefault(); document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" }); }}
                 className="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-display font-bold tracking-wide rounded-md transition-all duration-300"
                 style={{
                   color: "var(--text-secondary)",

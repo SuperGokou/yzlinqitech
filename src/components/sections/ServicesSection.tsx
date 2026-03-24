@@ -228,7 +228,7 @@ function ServiceModal({
         <div className="px-6 pb-6 pt-2">
           <a
             href="#chat-demo"
-            onClick={onClose}
+            onClick={(e) => { e.preventDefault(); onClose(); document.getElementById("chat-demo")?.scrollIntoView({ behavior: "smooth" }); }}
             className="flex items-center justify-center gap-2 w-full py-3 rounded-lg text-sm font-display font-bold tracking-wide transition-all duration-300"
             style={{ color: "#050a15", backgroundColor: "#00e5ff" }}
           >
