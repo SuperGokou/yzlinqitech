@@ -78,21 +78,21 @@ const JOBS_EN: JobPost[] = [
 ];
 
 const PERKS_ZH = [
-  { icon: "🌏", title: "全球远程", desc: "不限地点，异步协作，以结果为导向" },
-  { icon: "🤖", title: "AI 工具全配", desc: "Claude、Cursor、GPT-4 等顶级 AI 工具账号全覆盖" },
-  { icon: "📈", title: "项目分红", desc: "核心成员参与项目利润分成，多劳多得" },
-  { icon: "🎓", title: "技术成长", desc: "接触最前沿的 AI + 全栈技术，快速提升" },
-  { icon: "⏰", title: "弹性工作", desc: "自主安排时间，注重产出而非工时" },
-  { icon: "🚀", title: "创业氛围", desc: "扁平结构、快速决策、直接影响公司方向" },
+  { num: "01", title: "全球远程", desc: "不限地点，异步协作，以结果为导向" },
+  { num: "02", title: "AI 工具全配", desc: "Claude、Cursor、GPT-4 等顶级 AI 工具账号全覆盖" },
+  { num: "03", title: "项目分红", desc: "核心成员参与项目利润分成，多劳多得" },
+  { num: "04", title: "技术成长", desc: "接触最前沿的 AI + 全栈技术，快速提升" },
+  { num: "05", title: "弹性工作", desc: "自主安排时间，注重产出而非工时" },
+  { num: "06", title: "创业氛围", desc: "扁平结构、快速决策、直接影响公司方向" },
 ];
 
 const PERKS_EN = [
-  { icon: "🌏", title: "Fully Remote", desc: "Work from anywhere, async collaboration, results-driven" },
-  { icon: "🤖", title: "AI Tools Provided", desc: "Full access to Claude, Cursor, GPT-4 and top-tier AI tools" },
-  { icon: "📈", title: "Profit Sharing", desc: "Core members participate in project profit sharing" },
-  { icon: "🎓", title: "Growth", desc: "Cutting-edge AI + full-stack tech, rapid skill development" },
-  { icon: "⏰", title: "Flexible Hours", desc: "Manage your own schedule, output over hours" },
-  { icon: "🚀", title: "Startup Culture", desc: "Flat structure, fast decisions, directly shape company direction" },
+  { num: "01", title: "Fully Remote", desc: "Work from anywhere, async collaboration, results-driven" },
+  { num: "02", title: "AI Tools Provided", desc: "Full access to Claude, Cursor, GPT-4 and top-tier AI tools" },
+  { num: "03", title: "Profit Sharing", desc: "Core members participate in project profit sharing" },
+  { num: "04", title: "Growth", desc: "Cutting-edge AI + full-stack tech, rapid skill development" },
+  { num: "05", title: "Flexible Hours", desc: "Manage your own schedule, output over hours" },
+  { num: "06", title: "Startup Culture", desc: "Flat structure, fast decisions, directly shape company direction" },
 ];
 
 function CareersContent() {
@@ -134,7 +134,7 @@ function CareersContent() {
             <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={viewportOnce} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {perks.map((p) => (
                 <motion.div key={p.title} variants={fadeInUp} className="p-6 rounded-xl border border-border-subtle bg-bg-secondary/20 hover:border-neon-cyan/20 transition-colors duration-300">
-                  <span className="text-2xl mb-3 block">{p.icon}</span>
+                  <span className="font-mono text-2xl font-bold text-neon-cyan/20 mb-3 block">{p.num}</span>
                   <h3 className="font-display text-base font-semibold text-text-primary mb-1">{p.title}</h3>
                   <p className="text-sm text-text-secondary">{p.desc}</p>
                 </motion.div>

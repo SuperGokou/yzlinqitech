@@ -40,14 +40,14 @@ export default function Footer() {
     ? [
         { label: "开发流程", href: "/#how-it-works" },
         { label: "精选案例", href: "/#portfolio" },
-        { label: "技术栈", href: "/#contact" },
-        { label: "常见问题", href: "/about" },
+        { label: "技术栈", href: "/tech-stack" },
+        { label: "常见问题", href: "/faq" },
       ]
     : [
         { label: "Our Process", href: "/#how-it-works" },
         { label: "Portfolio", href: "/#portfolio" },
-        { label: "Tech Stack", href: "/#contact" },
-        { label: "FAQ", href: "/about" },
+        { label: "Tech Stack", href: "/tech-stack" },
+        { label: "FAQ", href: "/faq" },
       ];
 
   return (
