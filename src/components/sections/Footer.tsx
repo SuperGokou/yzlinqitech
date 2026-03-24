@@ -36,12 +36,19 @@ function Reveal({
 export default function Footer() {
   const { t, locale } = useLocale();
 
-  const serviceLinks = [
-    t.services.items[0]?.title ?? "Web Development",
-    t.services.items[1]?.title ?? "Mini Programs",
-    t.services.items[2]?.title ?? "Game Development",
-    t.services.items[3]?.title ?? "AI Custom",
-  ];
+  const resourceLinks = locale === "zh"
+    ? [
+        { label: "开发流程", href: "/#how-it-works" },
+        { label: "精选案例", href: "/#portfolio" },
+        { label: "技术栈", href: "/#contact" },
+        { label: "常见问题", href: "/about" },
+      ]
+    : [
+        { label: "Our Process", href: "/#how-it-works" },
+        { label: "Portfolio", href: "/#portfolio" },
+        { label: "Tech Stack", href: "/#contact" },
+        { label: "FAQ", href: "/about" },
+      ];
 
   return (
     <footer id="contact" className="relative">
@@ -204,13 +211,13 @@ export default function Footer() {
               <p className="text-xs text-text-muted leading-relaxed">{t.footer.description}</p>
             </div>
 
-            {/* Services */}
+            {/* Resources */}
             <div>
-              <h4 className="font-mono text-[10px] font-medium uppercase tracking-widest text-text-muted mb-3">{t.footer.services}</h4>
+              <h4 className="font-mono text-[10px] font-medium uppercase tracking-widest text-text-muted mb-3">{locale === "zh" ? "资源" : "Resources"}</h4>
               <ul className="space-y-1.5">
-                {serviceLinks.map((link) => (
-                  <li key={link}>
-                    <a href="#services" className="text-xs text-text-secondary hover:text-neon-cyan transition-colors duration-200">{link}</a>
+                {resourceLinks.map((link) => (
+                  <li key={link.href}>
+                    <a href={link.href} className="text-xs text-text-secondary hover:text-neon-cyan transition-colors duration-200">{link.label}</a>
                   </li>
                 ))}
               </ul>
@@ -220,9 +227,13 @@ export default function Footer() {
             <div>
               <h4 className="font-mono text-[10px] font-medium uppercase tracking-widest text-text-muted mb-3">{t.footer.company}</h4>
               <ul className="space-y-1.5">
-                {[t.footer.aboutUs, t.footer.blog, t.footer.careers].map((link) => (
-                  <li key={link}>
-                    <a href="#about" className="text-xs text-text-secondary hover:text-neon-cyan transition-colors duration-200">{link}</a>
+                {[
+                  { label: t.footer.aboutUs, href: "/about" },
+                  { label: t.footer.blog, href: "/blog" },
+                  { label: t.footer.careers, href: "/careers" },
+                ].map((link) => (
+                  <li key={link.href}>
+                    <a href={link.href} className="text-xs text-text-secondary hover:text-neon-cyan transition-colors duration-200">{link.label}</a>
                   </li>
                 ))}
               </ul>
@@ -246,8 +257,8 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} {t.footer.copyright}. {t.footer.allRights}.
             </p>
             <div className="flex items-center gap-5">
-              <a href="#" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors duration-200">{t.footer.privacy}</a>
-              <a href="#" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors duration-200">{t.footer.terms}</a>
+              <a href="/privacy" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors duration-200">{t.footer.privacy}</a>
+              <a href="/terms" className="text-[11px] text-text-muted hover:text-text-secondary transition-colors duration-200">{t.footer.terms}</a>
             </div>
           </div>
         </div>
