@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useLocale } from "@/contexts/LocaleContext";
 import {
   Card,
   CardHeader,
@@ -35,7 +36,17 @@ interface RecentOrder {
   readonly updated_at: string;
 }
 
-const STATUS_LABELS: Record<OrderStatus, string> = {
+const STATUS_LABELS_ZH: Record<OrderStatus, string> = {
+  pending: "待处理",
+  quoted: "已报价",
+  confirmed: "已确认",
+  in_progress: "进行中",
+  delivered: "已交付",
+  completed: "已完成",
+  cancelled: "已取消",
+};
+
+const STATUS_LABELS_EN: Record<OrderStatus, string> = {
   pending: "Pending",
   quoted: "Quoted",
   confirmed: "Confirmed",
@@ -56,10 +67,13 @@ const STATUS_COLORS: Record<OrderStatus, string> = {
 };
 
 export default function DashboardPage() {
+  const { locale } = useLocale();
   const [userName, setUserName] = useState<string | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentOrders, setRecentOrders] = useState<readonly RecentOrder[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const statusLabels = locale === "zh" ? STATUS_LABELS_ZH : STATUS_LABELS_EN;
 
   const loadDashboard = useCallback(async () => {
     try {
@@ -165,16 +179,18 @@ export default function DashboardPage() {
         <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
-              Welcome back, {userName ?? "User"}
+              {locale === "zh" ? "欢迎回来" : "Welcome back"}, {userName ?? "User"}
             </h2>
             <p className="mt-1 text-sm text-gray-500">
-              Here is an overview of your projects and activity.
+              {locale === "zh"
+                ? "以下是您的项目和动态概览。"
+                : "Here is an overview of your projects and activity."}
             </p>
           </div>
           <Link href="/dashboard/projects">
             <Button className="bg-blue-600 text-white hover:bg-blue-700">
               <Plus className="mr-1.5 size-4" />
-              Submit New Request
+              {locale === "zh" ? "提交新需求" : "Submit New Request"}
             </Button>
           </Link>
         </CardContent>
@@ -191,7 +207,7 @@ export default function DashboardPage() {
               <p className="text-2xl font-bold text-gray-900">
                 {stats?.activeProjects ?? 0}
               </p>
-              <p className="text-sm text-gray-500">Active Projects</p>
+              <p className="text-sm text-gray-500">{locale === "zh" ? "进行中项目" : "Active Projects"}</p>
             </div>
           </CardContent>
         </Card>
@@ -205,7 +221,7 @@ export default function DashboardPage() {
               <p className="text-2xl font-bold text-gray-900">
                 {stats?.pendingQuotes ?? 0}
               </p>
-              <p className="text-sm text-gray-500">Pending Quotes</p>
+              <p className="text-sm text-gray-500">{locale === "zh" ? "待处理报价" : "Pending Quotes"}</p>
             </div>
           </CardContent>
         </Card>
@@ -219,7 +235,7 @@ export default function DashboardPage() {
               <p className="text-2xl font-bold text-gray-900">
                 {stats?.unreadMessages ?? 0}
               </p>
-              <p className="text-sm text-gray-500">Unread Messages</p>
+              <p className="text-sm text-gray-500">{locale === "zh" ? "未读消息" : "Unread Messages"}</p>
             </div>
           </CardContent>
         </Card>
@@ -228,9 +244,9 @@ export default function DashboardPage() {
       {/* Recent Activity */}
       <Card className="border-gray-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-gray-900">Recent Activity</CardTitle>
+          <CardTitle className="text-gray-900">{locale === "zh" ? "最近动态" : "Recent Activity"}</CardTitle>
           <CardDescription className="text-gray-500">
-            Your latest project updates
+            {locale === "zh" ? "您最近的项目更新" : "Your latest project updates"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -238,7 +254,7 @@ export default function DashboardPage() {
             <div className="flex flex-col items-center gap-3 py-8 text-center">
               <Clock className="size-10 text-gray-300" />
               <p className="text-sm text-gray-500">
-                No projects yet. Submit a request to get started!
+                {locale === "zh" ? "暂无动态。提交需求开始吧！" : "No projects yet. Submit a request to get started!"}
               </p>
             </div>
           ) : (
@@ -254,7 +270,7 @@ export default function DashboardPage() {
                       {order.title}
                     </p>
                     <p className="text-xs text-gray-400">
-                      Updated{" "}
+                      {locale === "zh" ? "最后更新 " : "Updated "}
                       {new Date(order.updated_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -262,7 +278,7 @@ export default function DashboardPage() {
                     variant="secondary"
                     className={STATUS_COLORS[order.status]}
                   >
-                    {STATUS_LABELS[order.status]}
+                    {statusLabels[order.status]}
                   </Badge>
                 </Link>
               ))}

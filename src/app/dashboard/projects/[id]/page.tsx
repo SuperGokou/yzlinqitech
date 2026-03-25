@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { OrderStatus } from "@/lib/types";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface OrderDetail {
   readonly id: string;
@@ -59,7 +60,7 @@ const STATUS_STEPS: readonly OrderStatus[] = [
   "completed",
 ];
 
-const STATUS_LABELS: Record<OrderStatus, string> = {
+const STATUS_LABELS_EN: Record<OrderStatus, string> = {
   pending: "Pending",
   quoted: "Quoted",
   confirmed: "Confirmed",
@@ -69,12 +70,23 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   cancelled: "Cancelled",
 };
 
+const STATUS_LABELS_ZH: Record<OrderStatus, string> = {
+  pending: "待处理",
+  quoted: "已报价",
+  confirmed: "已确认",
+  in_progress: "进行中",
+  delivered: "已交付",
+  completed: "已完成",
+  cancelled: "已取消",
+};
+
 export default function ProjectDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const { locale } = useLocale();
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [quote, setQuote] = useState<QuoteDetail | null>(null);
   const [messages, setMessages] = useState<readonly MessageItem[]>([]);
@@ -82,6 +94,8 @@ export default function ProjectDetailPage({
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const statusLabels = locale === "zh" ? STATUS_LABELS_ZH : STATUS_LABELS_EN;
 
   const loadProject = useCallback(async () => {
     try {
@@ -172,11 +186,11 @@ export default function ProjectDetailPage({
           className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline"
         >
           <ArrowLeft className="size-4" />
-          Back to Projects
+          {locale === "zh" ? "返回项目列表" : "Back to Projects"}
         </Link>
         <Card className="border-gray-200 bg-white shadow-sm">
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500">Project not found.</p>
+            <p className="text-gray-500">{locale === "zh" ? "项目未找到。" : "Project not found."}</p>
           </CardContent>
         </Card>
       </div>
@@ -216,7 +230,7 @@ export default function ProjectDetailPage({
                   : "bg-blue-100 text-blue-800"
               )}
             >
-              {STATUS_LABELS[order.status]}
+              {statusLabels[order.status]}
             </Badge>
           </div>
         </CardHeader>
@@ -231,7 +245,7 @@ export default function ProjectDetailPage({
       {order.status !== "cancelled" && (
         <Card className="border-gray-200 bg-white shadow-sm">
           <CardHeader>
-            <CardTitle className="text-gray-900">Progress</CardTitle>
+            <CardTitle className="text-gray-900">{locale === "zh" ? "进度" : "Progress"}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 overflow-x-auto pb-2">
@@ -265,7 +279,7 @@ export default function ProjectDetailPage({
                               : "text-gray-400"
                         )}
                       >
-                        {STATUS_LABELS[step]}
+                        {statusLabels[step]}
                       </span>
                     </div>
                     {index < STATUS_STEPS.length - 1 && (
@@ -290,23 +304,23 @@ export default function ProjectDetailPage({
       {quote && (
         <Card className="border-gray-200 bg-white shadow-sm">
           <CardHeader>
-            <CardTitle className="text-gray-900">Quote</CardTitle>
+            <CardTitle className="text-gray-900">{locale === "zh" ? "报价详情" : "Quote Details"}</CardTitle>
             <CardDescription className="text-gray-500">
               {quote.status === "sent"
-                ? "Review the quote and accept or reject."
-                : `Quote status: ${quote.status}`}
+                ? (locale === "zh" ? "请审核报价并接受或拒绝。" : "Review the quote and accept or reject.")
+                : (locale === "zh" ? `报价状态: ${quote.status}` : `Quote status: ${quote.status}`)}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-baseline justify-between">
-              <span className="text-sm text-gray-500">Amount</span>
+              <span className="text-sm text-gray-500">{locale === "zh" ? "金额" : "Amount"}</span>
               <span className="text-xl font-bold text-gray-900">
                 {quote.currency} {quote.amount.toLocaleString()}
               </span>
             </div>
             {quote.valid_until && (
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-gray-500">Valid Until</span>
+                <span className="text-sm text-gray-500">{locale === "zh" ? "有效期至" : "Valid Until"}</span>
                 <span className="text-sm text-gray-700">
                   {new Date(quote.valid_until).toLocaleDateString()}
                 </span>
@@ -325,12 +339,12 @@ export default function ProjectDetailPage({
       {/* Messages */}
       <Card className="border-gray-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-gray-900">Messages</CardTitle>
+          <CardTitle className="text-gray-900">{locale === "zh" ? "消息" : "Messages"}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {messages.length === 0 ? (
             <p className="py-4 text-center text-sm text-gray-400">
-              No messages yet. Start the conversation below.
+              {locale === "zh" ? "暂无消息。在下方开始对话。" : "No messages yet. Start the conversation below."}
             </p>
           ) : (
             <div className="max-h-80 space-y-3 overflow-y-auto">
@@ -360,7 +374,7 @@ export default function ProjectDetailPage({
 
           <div className="flex gap-2">
             <Textarea
-              placeholder="Type your message..."
+              placeholder={locale === "zh" ? "输入消息..." : "Type your message..."}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               className="min-h-10 resize-none border-gray-300 bg-white text-gray-900 placeholder:text-gray-400"

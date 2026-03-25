@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { FileText, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { QuoteStatus } from "@/lib/types";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface QuoteItem {
   readonly id: string;
@@ -37,18 +38,28 @@ const QUOTE_STATUS_COLORS: Record<QuoteStatus, string> = {
   rejected: "bg-red-100 text-red-800",
 };
 
-const QUOTE_STATUS_LABELS: Record<QuoteStatus, string> = {
+const QUOTE_STATUS_LABELS_EN: Record<QuoteStatus, string> = {
   draft: "Draft",
   sent: "Pending",
   accepted: "Accepted",
   rejected: "Rejected",
 };
 
+const QUOTE_STATUS_LABELS_ZH: Record<QuoteStatus, string> = {
+  draft: "草稿",
+  sent: "待确认",
+  accepted: "已接受",
+  rejected: "已拒绝",
+};
+
 export default function QuotesPage() {
+  const { locale } = useLocale();
   const [quotes, setQuotes] = useState<readonly QuoteItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  const statusLabels = locale === "zh" ? QUOTE_STATUS_LABELS_ZH : QUOTE_STATUS_LABELS_EN;
 
   const loadQuotes = useCallback(async () => {
     try {
@@ -137,9 +148,9 @@ export default function QuotesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Quotes</h1>
+        <h1 className="text-xl font-semibold text-gray-900">{locale === "zh" ? "报价" : "Quotes"}</h1>
         <p className="text-sm text-gray-500">
-          Review and manage quotes for your projects.
+          {locale === "zh" ? "查看和管理项目报价" : "Review and manage quotes for your projects."}
         </p>
       </div>
 
@@ -148,8 +159,9 @@ export default function QuotesPage() {
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <FileText className="size-12 text-gray-300" />
             <p className="text-sm text-gray-500">
-              No quotes yet. Quotes will appear here once we review your
-              project requests.
+              {locale === "zh"
+                ? "暂无报价。提交项目需求后，报价将显示在这里。"
+                : "No quotes yet. Quotes will appear here once we review your project requests."}
             </p>
           </CardContent>
         </Card>
@@ -169,10 +181,12 @@ export default function QuotesPage() {
                         {quote.order?.title ?? "Untitled Order"}
                       </CardTitle>
                       <CardDescription className="mt-1 text-gray-500">
-                        Received{" "}
+                        {locale === "zh" ? "收到于 " : "Received "}
                         {new Date(quote.created_at).toLocaleDateString()}
                         {quote.valid_until &&
-                          ` | Valid until ${new Date(quote.valid_until).toLocaleDateString()}`}
+                          (locale === "zh"
+                            ? ` | 有效期至 ${new Date(quote.valid_until).toLocaleDateString()}`
+                            : ` | Valid until ${new Date(quote.valid_until).toLocaleDateString()}`)}
                       </CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
@@ -180,14 +194,14 @@ export default function QuotesPage() {
                         variant="secondary"
                         className={QUOTE_STATUS_COLORS[quote.status]}
                       >
-                        {QUOTE_STATUS_LABELS[quote.status]}
+                        {statusLabels[quote.status]}
                       </Badge>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-sm text-gray-500">Total Amount</span>
+                    <span className="text-sm text-gray-500">{locale === "zh" ? "总金额" : "Total Amount"}</span>
                     <span className="text-xl font-bold text-gray-900">
                       {quote.currency} {quote.amount.toLocaleString()}
                     </span>
@@ -212,7 +226,9 @@ export default function QuotesPage() {
                           ) : (
                             <ChevronDown className="size-4" />
                           )}
-                          {expanded ? "Hide" : "Show"} Breakdown
+                          {locale === "zh"
+                            ? (expanded ? "隐藏明细" : "显示明细")
+                            : (expanded ? "Hide Breakdown" : "Show Breakdown")}
                         </button>
                         {expanded && (
                           <div className="rounded-lg bg-gray-50 p-3">
@@ -249,8 +265,8 @@ export default function QuotesPage() {
                           )}
                         >
                           {actionLoading === quote.id
-                            ? "Processing..."
-                            : "Accept"}
+                            ? (locale === "zh" ? "处理中..." : "Processing...")
+                            : (locale === "zh" ? "接受" : "Accept")}
                         </Button>
                         <Button
                           variant="outline"
@@ -258,7 +274,7 @@ export default function QuotesPage() {
                           disabled={actionLoading === quote.id}
                           className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100"
                         >
-                          Reject
+                          {locale === "zh" ? "拒绝" : "Reject"}
                         </Button>
                       </div>
                     </>

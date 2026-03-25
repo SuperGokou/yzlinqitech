@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface OrderThread {
   readonly id: string;
@@ -32,6 +33,7 @@ interface MessageItem {
 }
 
 export default function MessagesPage() {
+  const { locale } = useLocale();
   const [threads, setThreads] = useState<readonly OrderThread[]>([]);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [messages, setMessages] = useState<readonly MessageItem[]>([]);
@@ -238,9 +240,9 @@ export default function MessagesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Messages</h1>
+        <h1 className="text-xl font-semibold text-gray-900">{locale === "zh" ? "消息" : "Messages"}</h1>
         <p className="text-sm text-gray-500">
-          Communicate with the team about your projects.
+          {locale === "zh" ? "项目沟通" : "Communicate with the team about your projects."}
         </p>
       </div>
 
@@ -249,8 +251,9 @@ export default function MessagesPage() {
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <MessageSquare className="size-12 text-gray-300" />
             <p className="text-sm text-gray-500">
-              No conversations yet. Messages will appear once you have active
-              projects.
+              {locale === "zh"
+                ? "暂无对话。有活跃项目后消息将显示在这里。"
+                : "No conversations yet. Messages will appear once you have active projects."}
             </p>
           </CardContent>
         </Card>
@@ -260,7 +263,7 @@ export default function MessagesPage() {
           <Card className="overflow-hidden border-gray-200 bg-white shadow-sm md:col-span-1">
             <CardHeader className="border-b border-gray-100">
               <CardTitle className="text-sm text-gray-900">
-                Conversations
+                {locale === "zh" ? "对话" : "Conversations"}
               </CardTitle>
             </CardHeader>
             <div className="overflow-y-auto">
@@ -329,7 +332,7 @@ export default function MessagesPage() {
                       </div>
                     ) : messages.length === 0 ? (
                       <p className="py-8 text-center text-sm text-gray-400">
-                        No messages yet. Start the conversation below.
+                        {locale === "zh" ? "暂无消息。在下方开始对话。" : "No messages yet. Start the conversation below."}
                       </p>
                     ) : (
                       <div className="space-y-3">
@@ -363,7 +366,7 @@ export default function MessagesPage() {
                   <div className="border-t border-gray-100 p-3">
                     <div className="flex gap-2">
                       <Textarea
-                        placeholder="Type a message... (Enter to send, Shift+Enter for new line)"
+                        placeholder={locale === "zh" ? "输入消息...（回车发送，Shift+回车换行）" : "Type a message... (Enter to send, Shift+Enter for new line)"}
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyDown={handleKeyDown}
@@ -385,7 +388,7 @@ export default function MessagesPage() {
             ) : (
               <div className="flex flex-1 items-center justify-center">
                 <p className="text-sm text-gray-400">
-                  Select a conversation to view messages.
+                  {locale === "zh" ? "选择一个对话查看消息。" : "Select a conversation to view messages."}
                 </p>
               </div>
             )}

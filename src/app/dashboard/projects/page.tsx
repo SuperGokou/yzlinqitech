@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FolderKanban, Filter } from "lucide-react";
 import type { OrderStatus } from "@/lib/types";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface Project {
   readonly id: string;
@@ -27,7 +28,7 @@ interface Project {
 
 type FilterValue = "all" | "active" | "completed";
 
-const STATUS_LABELS: Record<OrderStatus, string> = {
+const STATUS_LABELS_EN: Record<OrderStatus, string> = {
   pending: "Pending",
   quoted: "Quoted",
   confirmed: "Confirmed",
@@ -35,6 +36,16 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   delivered: "Delivered",
   completed: "Completed",
   cancelled: "Cancelled",
+};
+
+const STATUS_LABELS_ZH: Record<OrderStatus, string> = {
+  pending: "待处理",
+  quoted: "已报价",
+  confirmed: "已确认",
+  in_progress: "进行中",
+  delivered: "已交付",
+  completed: "已完成",
+  cancelled: "已取消",
 };
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
@@ -55,10 +66,26 @@ const ACTIVE_STATUSES: readonly OrderStatus[] = [
   "delivered",
 ];
 
+const FILTER_LABELS_ZH: Record<FilterValue, string> = {
+  all: "全部",
+  active: "进行中",
+  completed: "已完成",
+};
+
+const FILTER_LABELS_EN: Record<FilterValue, string> = {
+  all: "All",
+  active: "Active",
+  completed: "Completed",
+};
+
 export default function ProjectsPage() {
+  const { locale } = useLocale();
   const [projects, setProjects] = useState<readonly Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterValue>("all");
+
+  const statusLabels = locale === "zh" ? STATUS_LABELS_ZH : STATUS_LABELS_EN;
+  const filterLabels = locale === "zh" ? FILTER_LABELS_ZH : FILTER_LABELS_EN;
 
   const loadProjects = useCallback(async () => {
     try {
@@ -115,9 +142,9 @@ export default function ProjectsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">My Projects</h1>
+          <h1 className="text-xl font-semibold text-gray-900">{locale === "zh" ? "我的项目" : "My Projects"}</h1>
           <p className="text-sm text-gray-500">
-            Track and manage your project orders.
+            {locale === "zh" ? "跟踪项目进度" : "Track and manage your project orders."}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -134,7 +161,7 @@ export default function ProjectsPage() {
                   : "border-gray-300 text-gray-600 hover:bg-gray-100"
               }
             >
-              {val.charAt(0).toUpperCase() + val.slice(1)}
+              {filterLabels[val]}
             </Button>
           ))}
         </div>
@@ -146,8 +173,8 @@ export default function ProjectsPage() {
             <FolderKanban className="size-12 text-gray-300" />
             <p className="text-sm text-gray-500">
               {filter === "all"
-                ? "No projects yet. Submit a request to get started!"
-                : `No ${filter} projects found.`}
+                ? (locale === "zh" ? "暂无项目。提交需求开始！" : "No projects yet. Submit a request to get started!")
+                : (locale === "zh" ? `暂无${filterLabels[filter]}项目。` : `No ${filter} projects found.`)}
             </p>
           </CardContent>
         </Card>
@@ -165,7 +192,7 @@ export default function ProjectsPage() {
                       variant="secondary"
                       className={STATUS_COLORS[project.status]}
                     >
-                      {STATUS_LABELS[project.status]}
+                      {statusLabels[project.status]}
                     </Badge>
                   </div>
                   {project.service && (
@@ -179,7 +206,7 @@ export default function ProjectsPage() {
                     {project.description}
                   </p>
                   <p className="mt-3 text-xs text-gray-400">
-                    Updated{" "}
+                    {locale === "zh" ? "最后更新 " : "Last updated "}
                     {new Date(project.updated_at).toLocaleDateString()}
                   </p>
                 </CardContent>

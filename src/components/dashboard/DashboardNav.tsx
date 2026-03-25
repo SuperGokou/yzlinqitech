@@ -28,20 +28,23 @@ import {
   LogOut,
   Menu,
   X,
+  Globe,
 } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface NavItem {
-  readonly label: string;
+  readonly labelZh: string;
+  readonly labelEn: string;
   readonly href: string;
   readonly icon: React.ComponentType<{ className?: string }>;
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { label: "My Projects", href: "/dashboard/projects", icon: FolderKanban },
-  { label: "Quotes", href: "/dashboard/quotes", icon: FileText },
-  { label: "Messages", href: "/dashboard/messages", icon: MessageSquare },
-  { label: "Profile", href: "/dashboard/profile", icon: UserCircle },
+  { labelZh: "概览", labelEn: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { labelZh: "我的项目", labelEn: "My Projects", href: "/dashboard/projects", icon: FolderKanban },
+  { labelZh: "报价", labelEn: "Quotes", href: "/dashboard/quotes", icon: FileText },
+  { labelZh: "消息", labelEn: "Messages", href: "/dashboard/messages", icon: MessageSquare },
+  { labelZh: "个人资料", labelEn: "Profile", href: "/dashboard/profile", icon: UserCircle },
 ] as const;
 
 interface UserInfo {
@@ -53,6 +56,7 @@ interface UserInfo {
 export function DashboardNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const { locale, toggleLocale } = useLocale();
   const [user, setUser] = useState<UserInfo | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -151,7 +155,7 @@ export function DashboardNav() {
                   )}
                 >
                   <Icon className="size-4" />
-                  {item.label}
+                  {locale === "zh" ? item.labelZh : item.labelEn}
                 </Link>
               );
             })}
@@ -159,6 +163,17 @@ export function DashboardNav() {
 
           {/* User Menu */}
           <div className="flex items-center gap-2">
+            {/* Locale Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleLocale}
+              className="hidden gap-1 text-gray-500 hover:text-gray-900 md:flex"
+              aria-label="Toggle language"
+            >
+              <Globe className="size-4" />
+              {locale === "zh" ? "EN" : "中"}
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger
                 className="flex items-center gap-2 rounded-full outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-blue-500"
@@ -188,12 +203,12 @@ export function DashboardNav() {
                   onClick={() => router.push("/dashboard/profile")}
                 >
                   <UserCircle className="mr-1.5 size-4" />
-                  Profile
+                  {locale === "zh" ? "个人资料" : "Profile"}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-1.5 size-4" />
-                  Sign Out
+                  {locale === "zh" ? "退出登录" : "Sign Out"}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -235,10 +250,20 @@ export function DashboardNav() {
                 )}
               >
                 <Icon className="size-4" />
-                {item.label}
+                {locale === "zh" ? item.labelZh : item.labelEn}
               </Link>
             );
           })}
+          <button
+            onClick={() => {
+              toggleLocale();
+              setMobileOpen(false);
+            }}
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+          >
+            <Globe className="size-4" />
+            {locale === "zh" ? "Switch to English" : "切换到中文"}
+          </button>
         </div>
       )}
     </nav>

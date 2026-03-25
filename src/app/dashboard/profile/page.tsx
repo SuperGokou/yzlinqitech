@@ -20,6 +20,7 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { Check, Upload } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface ProfileData {
   readonly name: string;
@@ -29,6 +30,7 @@ interface ProfileData {
 }
 
 export default function ProfilePage() {
+  const { locale } = useLocale();
   const [profile, setProfile] = useState<ProfileData>({
     name: "",
     company: "",
@@ -239,9 +241,9 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">Profile</h1>
+        <h1 className="text-xl font-semibold text-gray-900">{locale === "zh" ? "个人资料" : "Profile"}</h1>
         <p className="text-sm text-gray-500">
-          Manage your account information and settings.
+          {locale === "zh" ? "管理账户设置" : "Manage your account information and settings."}
         </p>
       </div>
 
@@ -249,10 +251,10 @@ export default function ProfilePage() {
       <Card className="border-gray-200 bg-white shadow-sm">
         <CardHeader>
           <CardTitle className="text-gray-900">
-            Personal Information
+            {locale === "zh" ? "个人信息" : "Personal Information"}
           </CardTitle>
           <CardDescription className="text-gray-500">
-            Update your name, company, and contact details.
+            {locale === "zh" ? "更新您的姓名、公司和联系方式。" : "Update your name, company, and contact details."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -277,7 +279,7 @@ export default function ProfilePage() {
                   }
                 >
                   <Upload className="mr-1.5 size-3.5" />
-                  Change Avatar
+                  {locale === "zh" ? "更换头像" : "Change Avatar"}
                 </Button>
               </label>
               <input
@@ -299,7 +301,7 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-gray-700">
-                Name
+                {locale === "zh" ? "姓名" : "Name"}
               </Label>
               <Input
                 id="name"
@@ -313,7 +315,7 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-gray-700">
-                Email
+                {locale === "zh" ? "邮箱" : "Email"}
               </Label>
               <Input
                 id="email"
@@ -324,8 +326,8 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="company" className="text-gray-700">
-                Company{" "}
-                <span className="text-gray-400">(optional)</span>
+                {locale === "zh" ? "公司" : "Company"}{" "}
+                <span className="text-gray-400">({locale === "zh" ? "选填" : "optional"})</span>
               </Label>
               <Input
                 id="company"
@@ -342,8 +344,8 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone" className="text-gray-700">
-                Phone{" "}
-                <span className="text-gray-400">(optional)</span>
+                {locale === "zh" ? "电话" : "Phone"}{" "}
+                <span className="text-gray-400">({locale === "zh" ? "选填" : "optional"})</span>
               </Label>
               <Input
                 id="phone"
@@ -369,12 +371,12 @@ export default function ProfilePage() {
               disabled={saving}
               className="bg-blue-600 text-white hover:bg-blue-700"
             >
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? (locale === "zh" ? "保存中..." : "Saving...") : (locale === "zh" ? "保存修改" : "Save Changes")}
             </Button>
             {saved && (
               <span className="flex items-center gap-1 text-sm text-green-600">
                 <Check className="size-4" />
-                Saved
+                {locale === "zh" ? "已保存" : "Saved"}
               </span>
             )}
           </div>
@@ -384,16 +386,16 @@ export default function ProfilePage() {
       {/* Change Password */}
       <Card className="border-gray-200 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-gray-900">Change Password</CardTitle>
+          <CardTitle className="text-gray-900">{locale === "zh" ? "修改密码" : "Change Password"}</CardTitle>
           <CardDescription className="text-gray-500">
-            Update your account password.
+            {locale === "zh" ? "更新您的账户密码。" : "Update your account password."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="new-password" className="text-gray-700">
-                New Password
+                {locale === "zh" ? "新密码" : "New Password"}
               </Label>
               <Input
                 id="new-password"
@@ -412,7 +414,7 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password" className="text-gray-700">
-                Confirm Password
+                {locale === "zh" ? "确认密码" : "Confirm Password"}
               </Label>
               <Input
                 id="confirm-password"
@@ -444,12 +446,12 @@ export default function ProfilePage() {
               variant="outline"
               className="border-gray-300 text-gray-700 hover:bg-gray-100"
             >
-              {passwordSaving ? "Updating..." : "Update Password"}
+              {passwordSaving ? (locale === "zh" ? "更新中..." : "Updating...") : (locale === "zh" ? "更新密码" : "Update Password")}
             </Button>
             {passwordSuccess && (
               <span className="flex items-center gap-1 text-sm text-green-600">
                 <Check className="size-4" />
-                Password updated
+                {locale === "zh" ? "密码已更新" : "Password updated"}
               </span>
             )}
           </div>
