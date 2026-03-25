@@ -1,15 +1,7 @@
 -- Enable moddatetime extension for auto-updating updated_at
 CREATE EXTENSION IF NOT EXISTS moddatetime SCHEMA extensions;
 
--- Helper: Admin check function (SECURITY DEFINER bypasses RLS to avoid recursion)
-CREATE OR REPLACE FUNCTION public.is_admin()
-RETURNS BOOLEAN AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'
-  );
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
-
--- PROFILES
+-- PROFILES (must be created before is_admin() function)
 CREATE TABLE public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   role TEXT NOT NULL DEFAULT 'client' CHECK (role IN ('admin', 'client')),
@@ -21,6 +13,15 @@ CREATE TABLE public.profiles (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE TRIGGER profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION extensions.moddatetime(updated_at);
+
+-- Helper: Admin check function (SECURITY DEFINER bypasses RLS to avoid recursion)
+-- Must be created after profiles table exists
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'
+  );
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
