@@ -1,10 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LocaleProvider, useLocale } from "@/contexts/LocaleContext";
-import Navbar from "@/components/sections/Navbar";
-import Footer from "@/components/sections/Footer";
-import ChatWidget from "@/components/chat/ChatWidget";
+import { useLocale } from "@/contexts/LocaleContext";
 import { fadeInUp, staggerContainer, viewportOnce } from "@/lib/motion";
 
 interface TechItem {
@@ -140,14 +137,12 @@ const CATEGORIES_EN: TechCategory[] = [
   },
 ];
 
-function TechStackContent() {
+export default function TechStackPage() {
   const { locale } = useLocale();
   const categories = locale === "zh" ? CATEGORIES_ZH : CATEGORIES_EN;
 
   return (
-    <>
-      <Navbar />
-      <main className="pt-20">
+    <div className="pt-20">
         {/* Hero */}
         <section className="relative py-20 md:py-28 px-6 overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(0,229,255,0.06) 0%, transparent 70%)" }} />
@@ -199,17 +194,6 @@ function TechStackContent() {
             </div>
           </section>
         ))}
-      </main>
-      <Footer />
-      <ChatWidget />
-    </>
-  );
-}
-
-export default function TechStackPage() {
-  return (
-    <LocaleProvider>
-      <TechStackContent />
-    </LocaleProvider>
+    </div>
   );
 }

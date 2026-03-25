@@ -2,10 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { LocaleProvider, useLocale } from "@/contexts/LocaleContext";
-import Navbar from "@/components/sections/Navbar";
-import Footer from "@/components/sections/Footer";
-import ChatWidget from "@/components/chat/ChatWidget";
+import { useLocale } from "@/contexts/LocaleContext";
 import {
   fadeInUp,
   fadeIn,
@@ -57,17 +54,14 @@ const strengthIcons = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Inner page (needs locale context)                                  */
+/*  Page                                                                */
 /* ------------------------------------------------------------------ */
-function TeamPageContent() {
+export default function TeamPage() {
   const { t } = useLocale();
   const team = t.team;
 
   return (
-    <>
-      <Navbar />
-
-      <main id="main-content" role="main" className="pt-16">
+    <div id="main-content" role="main" className="pt-16">
         {/* ── Hero ───────────────────────────────────────── */}
         <section className="relative py-20 md:py-28 px-6 overflow-hidden">
           {/* Subtle radial glow */}
@@ -356,21 +350,6 @@ function TeamPageContent() {
             </div>
           </motion.div>
         </section>
-      </main>
-
-      <Footer />
-      <ChatWidget />
-    </>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Page wrapper with LocaleProvider                                    */
-/* ------------------------------------------------------------------ */
-export default function TeamPage() {
-  return (
-    <LocaleProvider>
-      <TeamPageContent />
-    </LocaleProvider>
+    </div>
   );
 }

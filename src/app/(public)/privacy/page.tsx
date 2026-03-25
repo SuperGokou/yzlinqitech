@@ -1,9 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LocaleProvider, useLocale } from "@/contexts/LocaleContext";
-import Navbar from "@/components/sections/Navbar";
-import Footer from "@/components/sections/Footer";
+import { useLocale } from "@/contexts/LocaleContext";
 import { fadeInUp, staggerContainer } from "@/lib/motion";
 
 const SECTIONS_ZH = [
@@ -68,14 +66,12 @@ const SECTIONS_EN = [
   },
 ];
 
-function PrivacyContent() {
+export default function PrivacyPage() {
   const { locale } = useLocale();
   const sections = locale === "zh" ? SECTIONS_ZH : SECTIONS_EN;
 
   return (
-    <>
-      <Navbar />
-      <main className="pt-20">
+    <div className="pt-20">
         <section className="relative py-20 md:py-28 px-6">
           <div className="max-w-4xl mx-auto">
             <motion.div variants={staggerContainer} initial="hidden" animate="visible">
@@ -96,16 +92,6 @@ function PrivacyContent() {
             </motion.div>
           </div>
         </section>
-      </main>
-      <Footer />
-    </>
-  );
-}
-
-export default function PrivacyPage() {
-  return (
-    <LocaleProvider>
-      <PrivacyContent />
-    </LocaleProvider>
+    </div>
   );
 }

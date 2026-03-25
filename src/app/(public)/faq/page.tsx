@@ -2,10 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LocaleProvider, useLocale } from "@/contexts/LocaleContext";
-import Navbar from "@/components/sections/Navbar";
-import Footer from "@/components/sections/Footer";
-import ChatWidget from "@/components/chat/ChatWidget";
+import { useLocale } from "@/contexts/LocaleContext";
 import { fadeInUp, staggerContainer, viewportOnce } from "@/lib/motion";
 
 interface FAQItem {
@@ -127,7 +124,7 @@ function AccordionItem({ item, isOpen, onToggle }: { item: FAQItem; isOpen: bool
   );
 }
 
-function FAQContent() {
+export default function FAQPage() {
   const { locale } = useLocale();
   const categories = locale === "zh" ? FAQ_ZH : FAQ_EN;
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
@@ -135,9 +132,7 @@ function FAQContent() {
   const toggle = (key: string) => setOpenMap((prev) => ({ ...prev, [key]: !prev[key] }));
 
   return (
-    <>
-      <Navbar />
-      <main className="pt-20">
+    <div className="pt-20">
         {/* Hero */}
         <section className="relative py-20 md:py-28 px-6 overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(180,74,255,0.05) 0%, transparent 70%)" }} />
@@ -193,17 +188,6 @@ function FAQContent() {
             </motion.div>
           </div>
         </section>
-      </main>
-      <Footer />
-      <ChatWidget />
-    </>
-  );
-}
-
-export default function FAQPage() {
-  return (
-    <LocaleProvider>
-      <FAQContent />
-    </LocaleProvider>
+    </div>
   );
 }
