@@ -366,13 +366,13 @@ export default function ProfilePage() {
           )}
 
           <div className="flex items-center gap-3">
-            <Button
+            <button
               onClick={handleSave}
               disabled={saving}
-              className="bg-blue-600 text-white hover:bg-blue-700"
+              className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
             >
               {saving ? (locale === "zh" ? "保存中..." : "Saving...") : (locale === "zh" ? "保存修改" : "Save Changes")}
-            </Button>
+            </button>
             {saved && (
               <span className="flex items-center gap-1 text-sm text-green-600">
                 <Check className="size-4" />
@@ -440,14 +440,13 @@ export default function ProfilePage() {
           )}
 
           <div className="flex items-center gap-3">
-            <Button
+            <button
               onClick={handlePasswordChange}
               disabled={passwordSaving}
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-100"
+              className="px-4 py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
             >
               {passwordSaving ? (locale === "zh" ? "更新中..." : "Updating...") : (locale === "zh" ? "更新密码" : "Update Password")}
-            </Button>
+            </button>
             {passwordSuccess && (
               <span className="flex items-center gap-1 text-sm text-green-600">
                 <Check className="size-4" />

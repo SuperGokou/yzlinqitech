@@ -150,19 +150,18 @@ export default function ProjectsPage() {
         <div className="flex items-center gap-2">
           <Filter className="size-4 text-gray-400" />
           {(["all", "active", "completed"] as const).map((val) => (
-            <Button
+            <button
               key={val}
-              variant={filter === val ? "default" : "outline"}
-              size="sm"
               onClick={() => setFilter(val)}
-              className={
+              className={cn(
+                "px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200",
                 filter === val
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
-                  : "border-gray-300 text-gray-600 hover:bg-gray-100"
-              }
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-gray-900"
+              )}
             >
               {filterLabels[val]}
-            </Button>
+            </button>
           ))}
         </div>
       </div>

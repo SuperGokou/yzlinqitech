@@ -257,22 +257,19 @@ export default function QuotesPage() {
                     <>
                       <Separator className="bg-gray-200" />
                       <div className="flex gap-2">
-                        <Button
+                        <button
                           onClick={() => handleAction(quote.id, "accepted")}
                           disabled={actionLoading === quote.id}
-                          className={cn(
-                            "flex-1 bg-green-600 text-white hover:bg-green-700"
-                          )}
+                          className="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
                         >
                           {actionLoading === quote.id
                             ? (locale === "zh" ? "处理中..." : "Processing...")
                             : (locale === "zh" ? "接受" : "Accept")}
-                        </Button>
-                        <Button
-                          variant="outline"
+                        </button>
+                        <button
                           onClick={() => handleAction(quote.id, "rejected")}
                           disabled={actionLoading === quote.id}
-                          className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100"
+                          className="flex-1 px-4 py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors"
                         >
                           {locale === "zh" ? "拒绝" : "Reject"}
                         </Button>

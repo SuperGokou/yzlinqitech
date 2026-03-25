@@ -373,14 +373,13 @@ export default function MessagesPage() {
                         className="min-h-10 resize-none border-gray-300 bg-white text-gray-900 placeholder:text-gray-400"
                         disabled={sending}
                       />
-                      <Button
+                      <button
                         onClick={handleSend}
                         disabled={sending || !newMessage.trim()}
-                        className="self-end bg-blue-600 text-white hover:bg-blue-700"
-                        size="icon"
+                        className="self-end p-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
                       >
                         <Send className="size-4" />
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 </CardContent>

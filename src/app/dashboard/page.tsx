@@ -188,10 +188,10 @@ export default function DashboardPage() {
             </p>
           </div>
           <Link href="/dashboard/projects">
-            <Button className="bg-blue-600 text-white hover:bg-blue-700">
+            <button className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm transition-colors">
               <Plus className="mr-1.5 size-4" />
               {locale === "zh" ? "提交新需求" : "Submit New Request"}
-            </Button>
+            </button>
           </Link>
         </CardContent>
       </Card>
