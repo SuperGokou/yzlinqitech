@@ -9,6 +9,8 @@ import { type NextRequest } from "next/server";
 import { searchKnowledge } from "@/lib/rag/search";
 import type { ChatRequest, ApiResponse } from "@/lib/types";
 
+export const dynamic = "force-static";
+
 /* ── Constants ──────────────────────────────────────────── */
 
 const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
