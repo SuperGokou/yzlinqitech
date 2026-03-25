@@ -25,7 +25,7 @@ const NAV_LINKS = [
 ] as const;
 
 export default function Navbar() {
-  const { t, toggleLocale } = useLocale();
+  const { t, locale, toggleLocale } = useLocale();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -182,12 +182,22 @@ export default function Navbar() {
           {/* Thin divider */}
           <div className="hidden sm:block w-px h-5 bg-white/10" />
 
+          {/* Login / Register */}
+          <Link href="/login">
+            <Button
+              variant="ghost"
+              className="hidden sm:inline-flex text-sm font-display font-medium uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5"
+            >
+              {locale === "zh" ? "登录" : "Login"}
+            </Button>
+          </Link>
+
           {/* CTA - shadcn Button */}
-          <Link href="/#chat-demo" onClick={(e) => handleNavClick(e, "/#chat-demo")}>
+          <Link href="/register">
             <Button
               className="hidden sm:inline-flex items-center gap-2 px-6 py-2.5 text-sm font-display font-bold uppercase tracking-wider rounded-lg bg-[#00e5ff] text-[#050a15] hover:bg-[#33ecff] shadow-[0_0_12px_rgba(0,229,255,0.2)] hover:shadow-[0_0_24px_rgba(0,229,255,0.4),0_0_48px_rgba(0,229,255,0.15)] transition-all duration-300 border-transparent"
             >
-              {t.nav.cta}
+              {locale === "zh" ? "免费注册" : "Sign Up"}
             </Button>
           </Link>
 
@@ -270,14 +280,19 @@ export default function Navbar() {
                   >
                     {t.nav.langToggle === "EN" ? "Switch to English" : "Switch to Chinese"}
                   </button>
-                  <Link
-                    href="/#chat-demo"
-                    onClick={(e) => { handleNavClick(e, "/#chat-demo"); closeMobile(); }}
-                  >
+                  <Link href="/login" onClick={closeMobile}>
+                    <Button
+                      variant="outline"
+                      className="w-full py-3 text-sm font-display font-medium uppercase tracking-wider rounded-lg border-white/20 text-[var(--text-primary)] hover:bg-white/5 transition-all duration-300"
+                    >
+                      {locale === "zh" ? "登录" : "Login"}
+                    </Button>
+                  </Link>
+                  <Link href="/register" onClick={closeMobile}>
                     <Button
                       className="w-full py-3 text-sm font-display font-bold uppercase tracking-wider rounded-lg bg-[#00e5ff] text-[#050a15] hover:bg-[#33ecff] transition-all duration-300 border-transparent"
                     >
-                      {t.nav.cta}
+                      {locale === "zh" ? "免费注册" : "Sign Up"}
                     </Button>
                   </Link>
                 </div>
