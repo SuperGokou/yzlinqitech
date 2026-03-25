@@ -48,9 +48,10 @@ export default function AIChatDemo() {
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const abortRef = useRef<AbortController | null>(null);
 
-  /* Auto-scroll to bottom */
+  /* Auto-scroll chat messages to bottom (within container only) */
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = messagesEndRef.current?.parentElement;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, isStreaming]);
 
   /* Send message via SSE to /api/chat */
