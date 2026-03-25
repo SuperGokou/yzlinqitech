@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useMemo, type ReactNode } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/contexts/LocaleContext";
-import { fadeInUp, staggerContainer, viewportOnce, springs } from "@/lib/motion";
+import { fadeInUp, staggerContainer, viewportOnce } from "@/lib/motion";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 /* --- Project data -------------------------------------------------------- */
 
@@ -11,17 +13,19 @@ type FilterCategory = "all" | "web" | "miniapp" | "game" | "ai";
 
 interface Project {
   name: string;
+  slug: string;
   filterKey: FilterCategory;
   tags: string[];
   gradientFrom: string;
   gradientTo: string;
 }
 
-const FILTER_ORDER: FilterCategory[] = ["all", "web", "miniapp", "game", "ai"];
+const FILTER_KEYS: FilterCategory[] = ["all", "web", "miniapp", "game", "ai"];
 
 const PROJECTS: Project[] = [
   {
     name: "\u667a\u6167\u7a0e\u52a1\u5e73\u53f0",
+    slug: "smart-tax-platform",
     filterKey: "ai",
     tags: ["Next.js", "Python", "AI"],
     gradientFrom: "from-neon-purple/30",
@@ -29,6 +33,7 @@ const PROJECTS: Project[] = [
   },
   {
     name: "\u7f8e\u98df\u63a2\u5e97\u5c0f\u7a0b\u5e8f",
+    slug: "food-explorer-miniapp",
     filterKey: "miniapp",
     tags: ["\u5fae\u4fe1", "React"],
     gradientFrom: "from-neon-cyan/30",
@@ -36,6 +41,7 @@ const PROJECTS: Project[] = [
   },
   {
     name: "\u4f01\u4e1a\u7ba1\u7406\u7cfb\u7edf",
+    slug: "enterprise-management",
     filterKey: "web",
     tags: ["Vue", "Node.js"],
     gradientFrom: "from-neon-cyan/30",
@@ -43,6 +49,7 @@ const PROJECTS: Project[] = [
   },
   {
     name: "\u50cf\u7d20\u5192\u9669",
+    slug: "pixel-adventure",
     filterKey: "game",
     tags: ["Unity", "C#"],
     gradientFrom: "from-neon-purple/20",
@@ -50,6 +57,7 @@ const PROJECTS: Project[] = [
   },
   {
     name: "AI \u5ba2\u670d\u52a9\u624b",
+    slug: "ai-customer-assistant",
     filterKey: "ai",
     tags: ["DeepSeek", "RAG"],
     gradientFrom: "from-neon-blue/30",
@@ -57,6 +65,7 @@ const PROJECTS: Project[] = [
   },
   {
     name: "\u7535\u5546\u76f4\u64ad\u5e73\u53f0",
+    slug: "ecommerce-livestream",
     filterKey: "web",
     tags: ["Next.js", "Stripe"],
     gradientFrom: "from-neon-cyan/20",
@@ -156,16 +165,28 @@ const INITIAL_VISIBLE = 4;
 
 export default function PortfolioSection() {
   const { t, locale } = useLocale();
-  const [activeFilter, setActiveFilter] = useState(0);
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
   const [expanded, setExpanded] = useState(false);
 
   const filtered = useMemo(() => {
-    if (activeFilter === 0) return PROJECTS;
-    return PROJECTS.filter((p) => p.filterKey === FILTER_ORDER[activeFilter]);
+    if (activeFilter === "all") return PROJECTS;
+    return PROJECTS.filter((p) => p.filterKey === activeFilter);
   }, [activeFilter]);
 
   const visibleItems = expanded ? filtered : filtered.slice(0, INITIAL_VISIBLE);
   const hasMore = filtered.length > INITIAL_VISIBLE;
+
+  // Map filter keys to localized labels
+  const filterLabels: Record<FilterCategory, string> = useMemo(() => {
+    const labels = t.portfolio.filters;
+    return {
+      all: labels[0],
+      web: labels[1],
+      miniapp: labels[2],
+      game: labels[3],
+      ai: labels[4],
+    };
+  }, [t.portfolio.filters]);
 
   return (
     <section id="portfolio" className="relative py-16 md:py-24 px-6 overflow-hidden">
@@ -189,40 +210,39 @@ export default function PortfolioSection() {
           </h2>
         </motion.div>
 
-        {/* Filter tabs */}
+        {/* Filter tabs -- shadcn Tabs */}
         <motion.div
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="flex items-center justify-center gap-1 mb-14 flex-wrap"
+          className="flex items-center justify-center mb-14"
         >
-          <div className="inline-flex items-center gap-1 rounded-full bg-bg-elevated/60 backdrop-blur-sm border border-border-subtle p-1">
-            {t.portfolio.filters.map((filter, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  setActiveFilter(i);
-                  setExpanded(false);
-                }}
-                className={`relative px-5 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
-                  activeFilter === i
-                    ? "text-bg-deep"
-                    : "text-text-secondary hover:text-text-primary"
-                }`}
-              >
-                {activeFilter === i && (
-                  <motion.span
-                    layoutId="portfolio-tab-indicator"
-                    transition={springs.snappy}
-                    className="absolute inset-0 rounded-full bg-neon-cyan"
-                    style={{ zIndex: 0 }}
-                  />
-                )}
-                <span className="relative z-10">{filter}</span>
-              </button>
+          <Tabs
+            defaultValue="all"
+            onValueChange={(val: unknown) => {
+              setActiveFilter(val as FilterCategory);
+              setExpanded(false);
+            }}
+            className="flex-col items-center"
+          >
+            <TabsList className="inline-flex items-center gap-1 rounded-full bg-[var(--bg-elevated)]/60 backdrop-blur-sm border border-[var(--border-subtle)] p-1 h-auto">
+              {FILTER_KEYS.map((key) => (
+                <TabsTrigger
+                  key={key}
+                  value={key}
+                  className="px-5 py-2 text-sm font-medium rounded-full transition-colors duration-200 data-active:bg-neon-cyan data-active:text-[var(--bg-deep)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                >
+                  {filterLabels[key]}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            {/* Render all tab content panels (each shows the same grid, filtered differently) */}
+            {FILTER_KEYS.map((key) => (
+              <TabsContent key={key} value={key} className="w-full" />
             ))}
-          </div>
+          </Tabs>
         </motion.div>
 
         {/* Project grid */}
@@ -242,67 +262,73 @@ export default function PortfolioSection() {
                     delay: i >= INITIAL_VISIBLE ? (i - INITIAL_VISIBLE) * 0.08 : 0,
                     ease: [0.25, 0.8, 0.25, 1],
                   }}
-                  className="group cursor-pointer"
+                  className="group"
                 >
-                  <div className="relative rounded-2xl overflow-hidden border border-border-subtle bg-bg-secondary/50 backdrop-blur-sm transition-all duration-500 hover:border-neon-cyan/25 hover:shadow-[0_0_30px_rgba(0,229,255,0.08),0_8px_32px_rgba(0,0,0,0.3)]">
-                    {/* Gradient hero area */}
-                    <div
-                      className={`relative h-56 md:h-64 bg-gradient-to-br ${project.gradientFrom} ${project.gradientTo} overflow-hidden`}
-                    >
-                      {/* Decorative mesh SVG */}
-                      {MESH_PATTERNS[globalIndex % 6]}
-
-                      {/* Grid overlay for texture */}
+                  <Link href={`/portfolio/${project.slug}`} className="block cursor-pointer">
+                    <div className="relative rounded-2xl overflow-hidden border border-border-subtle bg-bg-secondary/50 backdrop-blur-sm transition-all duration-500 hover:border-neon-cyan/25 hover:shadow-[0_0_30px_rgba(0,229,255,0.08),0_8px_32px_rgba(0,0,0,0.3)]">
+                      {/* Gradient hero area */}
                       <div
-                        className="absolute inset-0 opacity-[0.04]"
-                        style={{
-                          backgroundImage:
-                            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-                          backgroundSize: "40px 40px",
-                        }}
-                      />
+                        className={`relative h-56 md:h-64 bg-gradient-to-br ${project.gradientFrom} ${project.gradientTo} overflow-hidden`}
+                      >
+                        {/* Decorative mesh SVG */}
+                        {MESH_PATTERNS[globalIndex % 6]}
 
-                      {/* Project name centered in hero */}
-                      <div className="absolute inset-0 flex items-center justify-center p-6">
-                        <span className="font-display text-xl md:text-2xl font-bold text-text-primary/90 text-center drop-shadow-lg tracking-wide">
-                          {project.name}
-                        </span>
-                      </div>
+                        {/* Grid overlay for texture */}
+                        <div
+                          className="absolute inset-0 opacity-[0.04]"
+                          style={{
+                            backgroundImage:
+                              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+                            backgroundSize: "40px 40px",
+                          }}
+                        />
 
-                      {/* Hover overlay */}
-                      <div className="absolute inset-0 bg-bg-deep/70 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-[2px]">
-                        <motion.span
-                          initial={false}
-                          className="flex items-center gap-2 text-sm font-medium text-neon-cyan tracking-wide"
-                        >
-                          <span>{t.portfolio.viewProject}</span>
-                        </motion.span>
-                      </div>
-
-                      {/* Subtle bottom fade into card body */}
-                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-bg-secondary/80 to-transparent" />
-                    </div>
-
-                    {/* Card body */}
-                    <div className="relative px-6 py-5 bg-bg-secondary/40">
-                      <h3 className="font-display text-base font-semibold text-text-primary mb-3 tracking-wide group-hover:text-neon-cyan transition-colors duration-300">
-                        {project.name}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-xs px-3 py-1 rounded-full bg-white/[0.04] text-text-secondary border border-border-subtle font-mono tracking-wide"
-                          >
-                            {tag}
+                        {/* Project name centered in hero */}
+                        <div className="absolute inset-0 flex items-center justify-center p-6">
+                          <span className="font-display text-xl md:text-2xl font-bold text-text-primary/90 text-center drop-shadow-lg tracking-wide">
+                            {project.name}
                           </span>
-                        ))}
-                      </div>
-                    </div>
+                        </div>
 
-                    {/* Hover border glow line at top */}
-                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neon-cyan/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  </div>
+                        {/* Hover overlay with "View Details" */}
+                        <div className="absolute inset-0 bg-bg-deep/70 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
+                          <motion.span
+                            initial={false}
+                            className="flex items-center gap-2 text-sm font-medium text-neon-cyan tracking-wide"
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neon-cyan">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <span>{locale === "zh" ? "查看详情" : "View Details"}</span>
+                          </motion.span>
+                        </div>
+
+                        {/* Subtle bottom fade into card body */}
+                        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-bg-secondary/80 to-transparent" />
+                      </div>
+
+                      {/* Card body */}
+                      <div className="relative px-6 py-5 bg-bg-secondary/40">
+                        <h3 className="font-display text-base font-semibold text-text-primary mb-3 tracking-wide group-hover:text-neon-cyan transition-colors duration-300">
+                          {project.name}
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-xs px-3 py-1 rounded-full bg-white/[0.04] text-text-secondary border border-border-subtle font-mono tracking-wide"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Hover border glow line at top */}
+                      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neon-cyan/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    </div>
+                  </Link>
                 </motion.div>
               );
             })}

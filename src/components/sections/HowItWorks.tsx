@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useLocale } from "@/contexts/LocaleContext";
 import { fadeInUp, staggerContainer, viewportOnce } from "@/lib/motion";
+import { Card, CardContent } from "@/components/ui/card";
 
 /* ---- Step icons (inline SVG) ----------------------------------------- */
 
@@ -88,10 +89,10 @@ function RocketIcon() {
 const STEP_ICONS = [ChatIcon, BrainIcon, CheckIcon, RocketIcon];
 
 const STEP_ACCENT_COLORS = [
-  { border: "group-hover:border-t-neon-cyan", glow: "group-hover:shadow-[0_-2px_20px_rgba(0,229,255,0.3)]", number: "text-neon-cyan" },
-  { border: "group-hover:border-t-neon-purple", glow: "group-hover:shadow-[0_-2px_20px_rgba(180,74,255,0.3)]", number: "text-neon-purple" },
-  { border: "group-hover:border-t-neon-purple", glow: "group-hover:shadow-[0_-2px_20px_rgba(180,74,255,0.3)]", number: "text-neon-purple" },
-  { border: "group-hover:border-t-neon-cyan", glow: "group-hover:shadow-[0_-2px_20px_rgba(0,229,255,0.3)]", number: "text-neon-blue" },
+  { border: "group-hover:border-t-neon-cyan", glow: "group-hover:shadow-[0_-2px_20px_rgba(0,229,255,0.3)]", number: "text-neon-cyan", glowColor: "rgba(0, 229, 255, 0.12)" },
+  { border: "group-hover:border-t-neon-purple", glow: "group-hover:shadow-[0_-2px_20px_rgba(180,74,255,0.3)]", number: "text-neon-purple", glowColor: "rgba(180, 74, 255, 0.12)" },
+  { border: "group-hover:border-t-neon-purple", glow: "group-hover:shadow-[0_-2px_20px_rgba(180,74,255,0.3)]", number: "text-neon-purple", glowColor: "rgba(180, 74, 255, 0.12)" },
+  { border: "group-hover:border-t-neon-cyan", glow: "group-hover:shadow-[0_-2px_20px_rgba(0,229,255,0.3)]", number: "text-neon-blue", glowColor: "rgba(59, 130, 246, 0.12)" },
 ];
 
 /* ---- Component -------------------------------------------------------- */
@@ -134,7 +135,7 @@ export default function HowItWorks() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="relative grid grid-cols-1 md:grid-cols-4 gap-0"
+          className="relative grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-0"
         >
           {/* Connecting dashed line across all steps (desktop only) */}
           <div className="hidden md:block absolute top-[52px] left-[12.5%] right-[12.5%] z-0">
@@ -150,11 +151,20 @@ export default function HowItWorks() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="relative z-10 flex flex-col items-center text-center px-4 md:px-8"
+                className="relative z-10 flex flex-col items-center text-center px-2 md:px-4"
               >
-                {/* Icon circle */}
+                {/* Icon circle with hover glow */}
                 <div className="relative mb-8">
-                  <div className="w-[104px] h-[104px] rounded-full border border-border-default bg-bg-secondary/80 backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:border-neon-cyan/30 hover:shadow-[0_0_30px_rgba(0,229,255,0.12)]">
+                  <div
+                    className="w-[104px] h-[104px] rounded-full border border-border-default bg-bg-secondary/80 backdrop-blur-sm flex items-center justify-center transition-all duration-500 hover:border-neon-cyan/30"
+                    style={{ boxShadow: "none" }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.boxShadow = `0 0 30px ${accent.glowColor}`;
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                    }}
+                  >
                     <Icon />
                   </div>
                   {/* Step number badge */}
@@ -165,20 +175,25 @@ export default function HowItWorks() {
                   </span>
                 </div>
 
-                {/* Large monospace number */}
-                <span className={`font-mono text-5xl md:text-6xl font-extrabold ${accent.number} opacity-15 select-none leading-none mb-4`}>
-                  {num}
-                </span>
+                {/* Step card using shadcn Card */}
+                <Card className="w-full bg-transparent border-none ring-0 shadow-none py-0">
+                  <CardContent className="px-0 flex flex-col items-center">
+                    {/* Large monospace number */}
+                    <span className={`font-mono text-5xl md:text-6xl font-extrabold ${accent.number} opacity-15 select-none leading-none mb-4`}>
+                      {num}
+                    </span>
 
-                {/* Title */}
-                <h3 className="font-display text-lg md:text-xl font-semibold text-text-primary mb-3">
-                  {step.title}
-                </h3>
+                    {/* Title */}
+                    <h3 className="font-display text-lg md:text-xl font-semibold text-text-primary mb-3">
+                      {step.title}
+                    </h3>
 
-                {/* Description */}
-                <p className="text-text-secondary text-sm leading-relaxed max-w-[280px]">
-                  {step.desc}
-                </p>
+                    {/* Description */}
+                    <p className="text-text-secondary text-sm leading-relaxed max-w-[280px]">
+                      {step.desc}
+                    </p>
+                  </CardContent>
+                </Card>
 
                 {/* Vertical connector line between steps on mobile */}
                 {i < 3 && (

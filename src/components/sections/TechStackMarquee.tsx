@@ -38,7 +38,12 @@ const ROW_2: TechItem[] = [
 
 function TechPill({ item }: { item: TechItem }) {
   return (
-    <div className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-border-subtle bg-white/[0.03] text-sm text-text-secondary whitespace-nowrap select-none shrink-0 transition-colors duration-200 hover:border-border-default hover:text-text-primary">
+    <div
+      className="flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-border-subtle bg-white/[0.03] text-sm text-text-secondary whitespace-nowrap select-none shrink-0 transition-all duration-300 hover:border-border-default hover:text-text-primary hover:bg-white/[0.06]"
+      style={{
+        willChange: "transform",
+      }}
+    >
       {item.icon ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={item.icon} alt="" width={18} height={18} className="shrink-0" />
@@ -67,7 +72,8 @@ function MarqueeRow({
   items: TechItem[];
   reverse?: boolean;
 }) {
-  const doubled = [...items, ...items];
+  // Triple the items to ensure seamless infinite scroll
+  const tripled = [...items, ...items, ...items];
 
   return (
     <div className="relative overflow-hidden group">
@@ -81,9 +87,11 @@ function MarqueeRow({
         style={{
           width: "max-content",
           animationDirection: reverse ? "reverse" : "normal",
+          willChange: "transform",
+          backfaceVisibility: "hidden",
         }}
       >
-        {doubled.map((item, i) => (
+        {tripled.map((item, i) => (
           <TechPill key={`${item.name}-${i}`} item={item} />
         ))}
       </div>
