@@ -20,6 +20,9 @@ export function useSiteContent(section: string) {
           const mapped = Object.fromEntries(data.map((item) => [item.key, item]));
           setContent(mapped);
         }
+      })
+      .catch(() => {})
+      .finally(() => {
         setLoading(false);
       });
   }, [section]);

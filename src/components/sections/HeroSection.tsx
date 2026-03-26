@@ -4,8 +4,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/contexts/LocaleContext";
 import { fadeInUp, staggerContainer, viewportOnce } from "@/lib/motion";
-import { useSiteContent } from "@/hooks/useSiteContent";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
 /* --- Animated counter card ------------------------------------------------ */
@@ -92,18 +90,6 @@ function AnimatedStatCard({
   );
 }
 
-/* --- Stat skeleton loader ------------------------------------------------- */
-
-function StatSkeleton() {
-  return (
-    <div className="space-y-2">
-      <Skeleton className="h-9 w-20 bg-white/[0.06]" />
-      <Skeleton className="h-3 w-24 bg-white/[0.04]" />
-      <Skeleton className="h-px w-8 mt-3 bg-white/[0.04]" />
-    </div>
-  );
-}
-
 /* --- Dot grid background -------------------------------------------------- */
 
 function DotGrid() {
@@ -161,39 +147,13 @@ function ScrollIndicator() {
 /* --- Hero Section --------------------------------------------------------- */
 
 export default function HeroSection() {
-  const { t, locale } = useLocale();
-  const { content, loading } = useSiteContent("hero");
+  const { t } = useLocale();
 
-  // Build stats from dynamic content with fallbacks
   const stats = [
-    {
-      numericTarget: content["stat_projects"]
-        ? Number(locale === "zh" ? content["stat_projects"].value_zh : content["stat_projects"].value_en) || 50
-        : 50,
-      suffix: "+",
-      label: t.hero.stats.projects,
-    },
-    {
-      numericTarget: content["stat_satisfaction"]
-        ? Number(locale === "zh" ? content["stat_satisfaction"].value_zh : content["stat_satisfaction"].value_en) || 99
-        : 99,
-      suffix: "%",
-      label: t.hero.stats.satisfaction,
-    },
-    {
-      numericTarget: content["stat_response"]
-        ? Number(locale === "zh" ? content["stat_response"].value_zh : content["stat_response"].value_en) || 24
-        : 24,
-      suffix: "h",
-      label: t.hero.stats.response,
-    },
-    {
-      numericTarget: content["stat_employees"]
-        ? Number(locale === "zh" ? content["stat_employees"].value_zh : content["stat_employees"].value_en) || 0
-        : 0,
-      suffix: "",
-      label: t.hero.stats.employees,
-    },
+    { numericTarget: 50, suffix: "+", label: t.hero.stats.projects },
+    { numericTarget: 99, suffix: "%", label: t.hero.stats.satisfaction },
+    { numericTarget: 24, suffix: "h", label: t.hero.stats.response },
+    { numericTarget: 0, suffix: "", label: t.hero.stats.employees },
   ];
 
   return (
@@ -345,19 +305,14 @@ export default function HeroSection() {
         >
           <div className="max-w-6xl mx-auto px-6 py-10 lg:py-12">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10">
-              {loading
-                ? Array.from({ length: 4 }).map((_, i) => (
-                    <StatSkeleton key={i} />
-                  ))
-                : stats.map((stat) => (
-                    <AnimatedStatCard
-                      key={stat.label}
-                      numericTarget={stat.numericTarget}
-                      suffix={stat.suffix}
-                      label={stat.label}
-                    />
-                  ))
-              }
+              {stats.map((stat) => (
+                <AnimatedStatCard
+                  key={stat.label}
+                  numericTarget={stat.numericTarget}
+                  suffix={stat.suffix}
+                  label={stat.label}
+                />
+              ))}
             </div>
           </div>
         </motion.div>
