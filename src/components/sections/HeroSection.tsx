@@ -4,8 +4,11 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/contexts/LocaleContext";
 import { fadeInUp, staggerContainer, viewportOnce } from "@/lib/motion";
+import { useSiteContent } from "@/hooks/useSiteContent";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
-/* ─── Animated counter card ──────────────────────────────────── */
+/* --- Animated counter card ------------------------------------------------ */
 
 function AnimatedStatCard({
   numericTarget,
@@ -62,8 +65,7 @@ function AnimatedStatCard({
       {/* Stat value */}
       <div className="flex items-baseline gap-1">
         <span
-          className="font-display text-3xl md:text-4xl font-bold tracking-tight"
-          style={{ color: "#00e5ff" }}
+          className="font-display text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-[#00e5ff] to-[#00b8d4] bg-clip-text text-transparent"
         >
           {count}
         </span>
@@ -90,7 +92,19 @@ function AnimatedStatCard({
   );
 }
 
-/* ─── Dot grid background ──────────────────────────────────────── */
+/* --- Stat skeleton loader ------------------------------------------------- */
+
+function StatSkeleton() {
+  return (
+    <div className="space-y-2">
+      <Skeleton className="h-9 w-20 bg-white/[0.06]" />
+      <Skeleton className="h-3 w-24 bg-white/[0.04]" />
+      <Skeleton className="h-px w-8 mt-3 bg-white/[0.04]" />
+    </div>
+  );
+}
+
+/* --- Dot grid background -------------------------------------------------- */
 
 function DotGrid() {
   return (
@@ -109,7 +123,7 @@ function DotGrid() {
   );
 }
 
-/* ─── Scroll indicator ──────────────────────────────────────────── */
+/* --- Scroll indicator ----------------------------------------------------- */
 
 function ScrollIndicator() {
   return (
@@ -144,16 +158,42 @@ function ScrollIndicator() {
   );
 }
 
-/* ─── Hero Section ────────────────────────────────────────────── */
+/* --- Hero Section --------------------------------------------------------- */
 
 export default function HeroSection() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const { content, loading } = useSiteContent("hero");
 
+  // Build stats from dynamic content with fallbacks
   const stats = [
-    { numericTarget: 50, suffix: "+", label: t.hero.stats.projects },
-    { numericTarget: 99, suffix: "%", label: t.hero.stats.satisfaction },
-    { numericTarget: 24, suffix: "h", label: t.hero.stats.response },
-    { numericTarget: 0, suffix: "", label: t.hero.stats.employees },
+    {
+      numericTarget: content["stat_projects"]
+        ? Number(locale === "zh" ? content["stat_projects"].value_zh : content["stat_projects"].value_en) || 50
+        : 50,
+      suffix: "+",
+      label: t.hero.stats.projects,
+    },
+    {
+      numericTarget: content["stat_satisfaction"]
+        ? Number(locale === "zh" ? content["stat_satisfaction"].value_zh : content["stat_satisfaction"].value_en) || 99
+        : 99,
+      suffix: "%",
+      label: t.hero.stats.satisfaction,
+    },
+    {
+      numericTarget: content["stat_response"]
+        ? Number(locale === "zh" ? content["stat_response"].value_zh : content["stat_response"].value_en) || 24
+        : 24,
+      suffix: "h",
+      label: t.hero.stats.response,
+    },
+    {
+      numericTarget: content["stat_employees"]
+        ? Number(locale === "zh" ? content["stat_employees"].value_zh : content["stat_employees"].value_en) || 0
+        : 0,
+      suffix: "",
+      label: t.hero.stats.employees,
+    },
   ];
 
   return (
@@ -220,18 +260,19 @@ export default function HeroSection() {
               </span>
             </motion.div>
 
-            {/* Main title - massive */}
+            {/* Main title -- gradient text effect */}
             <motion.h1
               variants={fadeInUp}
               className="font-display font-bold tracking-tight leading-[0.95] mb-8 lg:mb-10 max-w-5xl"
               style={{
                 fontSize: "clamp(2.5rem, 8vw, 7rem)",
-                color: "var(--text-primary)",
               }}
             >
-              {t.hero.titleMain}
+              <span className="bg-gradient-to-r from-white via-white to-[rgba(255,255,255,0.7)] bg-clip-text text-transparent">
+                {t.hero.titleMain}
+              </span>
               <span
-                className="inline-block ml-[0.15em] w-[0.15em] h-[0.6em] -translate-y-[0.05em]"
+                className="inline-block ml-[0.15em] w-[0.15em] h-[0.6em] -translate-y-[0.05em] animate-pulse"
                 style={{ backgroundColor: "#00e5ff" }}
               />
             </motion.h1>
@@ -245,7 +286,7 @@ export default function HeroSection() {
               {t.hero.subtitle}
             </motion.p>
 
-            {/* CTA buttons */}
+            {/* CTA buttons -- using shadcn Button */}
             <motion.div
               variants={fadeInUp}
               className="flex flex-col sm:flex-row items-start gap-4 mb-12 lg:mb-0"
@@ -254,58 +295,40 @@ export default function HeroSection() {
               <a
                 href="#chat-demo"
                 onClick={(e) => { e.preventDefault(); document.getElementById("chat-demo")?.scrollIntoView({ behavior: "smooth" }); }}
-                className="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-display font-bold tracking-wide rounded-md transition-all duration-300"
-                style={{
-                  color: "#050a15",
-                  backgroundColor: "#00e5ff",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.boxShadow =
-                    "0 0 30px rgba(0, 229, 255, 0.3), 0 0 60px rgba(0, 229, 255, 0.1)";
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#33ecff";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#00e5ff";
-                }}
               >
-                {t.hero.ctaPrimary}
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  className="transition-transform duration-200 group-hover:translate-x-0.5"
+                <Button
+                  className="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-display font-bold tracking-wide rounded-md bg-[#00e5ff] text-[#050a15] hover:bg-[#33ecff] hover:shadow-[0_0_30px_rgba(0,229,255,0.3),0_0_60px_rgba(0,229,255,0.1)] transition-all duration-300 border-transparent"
                 >
-                  <path
-                    d="M1 7h12M8 2l5 5-5 5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                  {t.hero.ctaPrimary}
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    className="transition-transform duration-200 group-hover:translate-x-0.5"
+                  >
+                    <path
+                      d="M1 7h12M8 2l5 5-5 5"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </Button>
               </a>
 
               {/* Secondary CTA */}
               <a
                 href="#portfolio"
                 onClick={(e) => { e.preventDefault(); document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" }); }}
-                className="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-display font-bold tracking-wide rounded-md transition-all duration-300"
-                style={{
-                  color: "var(--text-secondary)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(0, 229, 255, 0.3)";
-                  (e.currentTarget as HTMLElement).style.color = "#00e5ff";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(255, 255, 255, 0.1)";
-                  (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-                }}
               >
-                {t.hero.ctaSecondary}
+                <Button
+                  variant="outline"
+                  className="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-display font-bold tracking-wide rounded-md text-[var(--text-secondary)] border-[rgba(255,255,255,0.1)] bg-transparent hover:border-[rgba(0,229,255,0.3)] hover:text-[#00e5ff] transition-all duration-300"
+                >
+                  {t.hero.ctaSecondary}
+                </Button>
               </a>
             </motion.div>
           </motion.div>
@@ -322,14 +345,19 @@ export default function HeroSection() {
         >
           <div className="max-w-6xl mx-auto px-6 py-10 lg:py-12">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10">
-              {stats.map((stat) => (
-                <AnimatedStatCard
-                  key={stat.label}
-                  numericTarget={stat.numericTarget}
-                  suffix={stat.suffix}
-                  label={stat.label}
-                />
-              ))}
+              {loading
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <StatSkeleton key={i} />
+                  ))
+                : stats.map((stat) => (
+                    <AnimatedStatCard
+                      key={stat.label}
+                      numericTarget={stat.numericTarget}
+                      suffix={stat.suffix}
+                      label={stat.label}
+                    />
+                  ))
+              }
             </div>
           </div>
         </motion.div>

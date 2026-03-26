@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/contexts/LocaleContext";
 import { fadeInUp, staggerContainer, viewportOnce } from "@/lib/motion";
+import { Button } from "@/components/ui/button";
 
 /* --- Types --------------------------------------------------------------- */
 
@@ -230,7 +231,7 @@ export default function AIChatDemo() {
             </div>
 
             {/* Messages area */}
-            <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
+            <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
               <AnimatePresence initial={false}>
                 {messages.map((msg, i) => (
                   <motion.div
@@ -269,27 +270,6 @@ export default function AIChatDemo() {
                   </motion.div>
                 ))}
               </AnimatePresence>
-
-              {/* Standalone typing indicator when last message is empty and streaming */}
-              {isStreaming &&
-                messages[messages.length - 1]?.role === "assistant" &&
-                messages[messages.length - 1]?.content === "" &&
-                !(messages.length > 0) && (
-                  <div className="flex justify-start">
-                    <div className="w-7 h-7 rounded-lg overflow-hidden mr-2.5 mt-1 shrink-0 ring-1 ring-border-subtle/40">
-                      <Image
-                        src="/logo.avif"
-                        alt="Bot"
-                        width={28}
-                        height={28}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="bg-bg-elevated/70 rounded-2xl rounded-bl-md border border-border-subtle/40 px-4 py-3">
-                      <TypingIndicator />
-                    </div>
-                  </div>
-                )}
               <div ref={messagesEndRef} />
             </div>
 
@@ -329,10 +309,11 @@ export default function AIChatDemo() {
                 className="flex-1 bg-bg-surface/60 rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted/60 border border-border-subtle/60 focus:border-neon-cyan/30 focus:bg-bg-surface/80 focus:shadow-[0_0_0_3px_rgba(0,229,255,0.06)] focus:outline-none transition-all duration-250"
                 disabled={isStreaming}
               />
-              <button
+              <Button
                 type="submit"
                 disabled={!isActive}
-                className={`relative p-2.5 rounded-xl transition-all duration-250 ${
+                size="icon"
+                className={`relative rounded-xl transition-all duration-250 border-transparent ${
                   isActive
                     ? "bg-neon-cyan text-bg-deep shadow-[0_0_16px_rgba(0,229,255,0.25)] hover:shadow-[0_0_24px_rgba(0,229,255,0.35)] hover:scale-105 active:scale-95"
                     : "bg-bg-surface/60 text-text-muted/40 cursor-not-allowed"
@@ -352,7 +333,7 @@ export default function AIChatDemo() {
                   <line x1="22" y1="2" x2="11" y2="13" />
                   <polygon points="22 2 15 22 11 13 2 9 22 2" />
                 </svg>
-              </button>
+              </Button>
             </form>
           </div>
 

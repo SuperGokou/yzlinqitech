@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Orbitron, Inter, Noto_Sans_SC, JetBrains_Mono } from "next/font/google";
+import { Orbitron, Inter, Noto_Sans_SC, JetBrains_Mono, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const orbitron = Orbitron({
   subsets: ["latin"],
@@ -82,7 +85,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh-CN"
-      className={`${orbitron.variable} ${inter.variable} ${notoSansSC.variable} ${jetbrainsMono.variable}`}
+      className={cn(orbitron.variable, inter.variable, notoSansSC.variable, jetbrainsMono.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-screen bg-bg-primary text-text-primary font-body antialiased">
         <a

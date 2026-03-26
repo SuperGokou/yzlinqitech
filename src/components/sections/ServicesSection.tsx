@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "@/contexts/LocaleContext";
 import {
@@ -9,6 +10,15 @@ import {
   hoverGlow,
   viewportOnce,
 } from "@/lib/motion";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 /* ---- Service icons (inline SVG) --------------------------------------- */
 
@@ -95,6 +105,17 @@ function MobileIcon() {
 
 const SERVICE_ICONS = [WebIcon, MiniAppIcon, GameIcon, AIIcon, FactoryIcon, DesignIcon, ChartIcon, MobileIcon];
 
+const SERVICE_SLUGS = [
+  "web-development",
+  "mini-programs",
+  "game-development",
+  "ai-custom",
+  "industrial-software",
+  "ui-ux-design",
+  "data-visualization",
+  "mobile-development",
+];
+
 const ICON_COLORS = [
   "text-neon-cyan",
   "text-neon-blue",
@@ -143,9 +164,9 @@ function getSpanClass(index: number): string {
   return pattern === 0 || pattern === 3 ? "md:col-span-2" : "md:col-span-1";
 }
 
-/* ---- Detail Modal ----------------------------------------------------- */
+/* ---- Service Dialog Content --------------------------------------------- */
 
-function ServiceModal({
+function ServiceDialogContent({
   service,
   index,
   onClose,
@@ -157,89 +178,69 @@ function ServiceModal({
   const { locale } = useLocale();
   const Icon = SERVICE_ICONS[index % SERVICE_ICONS.length];
   const iconColor = ICON_COLORS[index % ICON_COLORS.length];
+  const slug = SERVICE_SLUGS[index % SERVICE_SLUGS.length];
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+    <>
+      <DialogHeader className="flex flex-row items-center gap-4">
+        <div className={`flex items-center justify-center w-11 h-11 rounded-xl bg-white/[0.06] border border-[var(--border-subtle)] ${iconColor} shrink-0`}>
+          <Icon />
+        </div>
+        <div className="flex-1 min-w-0">
+          <DialogTitle className="font-display text-xl font-bold text-[var(--text-primary)]">{service.title}</DialogTitle>
+          <DialogDescription className="text-sm text-[var(--text-muted)]">{service.desc}</DialogDescription>
+        </div>
+      </DialogHeader>
 
-      {/* Panel */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ duration: 0.25 }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl border border-border-subtle bg-bg-secondary/95 backdrop-blur-xl shadow-2xl"
-      >
-        {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center gap-4 px-6 pt-6 pb-4 bg-bg-secondary/95 backdrop-blur-xl border-b border-border-subtle/50">
-          <div className={`flex items-center justify-center w-11 h-11 rounded-xl bg-white/[0.06] border border-border-subtle ${iconColor}`}>
-            <Icon />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-display text-xl font-bold text-text-primary">{service.title}</h3>
-            <p className="text-sm text-text-muted">{service.desc}</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted hover:text-text-primary hover:bg-white/[0.06] transition-colors"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+      {/* Body */}
+      <div className="space-y-5">
+        {/* Detail paragraph */}
+        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{service.detail}</p>
+
+        {/* Features list */}
+        <div className="space-y-2.5">
+          {service.features.map((feat, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0 mt-0.5 text-neon-cyan">
+                <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="text-sm text-[var(--text-secondary)]">{feat}</span>
+            </div>
+          ))}
         </div>
 
-        {/* Body */}
-        <div className="px-6 py-5 space-y-5">
-          {/* Detail paragraph */}
-          <p className="text-sm text-text-secondary leading-relaxed">{service.detail}</p>
-
-          {/* Features list */}
-          <div className="space-y-2.5">
-            {service.features.map((feat, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0 mt-0.5 text-neon-cyan">
-                  <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span className="text-sm text-text-secondary">{feat}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 pt-2">
-            {service.tags.map((tag) => (
-              <span key={tag} className="text-[11px] font-mono tracking-wide px-2.5 py-1 rounded-full bg-white/[0.04] text-text-muted border border-border-subtle">
-                {tag}
-              </span>
-            ))}
-          </div>
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 pt-2">
+          {service.tags.map((tag) => (
+            <span key={tag} className="text-[11px] font-mono tracking-wide px-2.5 py-1 rounded-full bg-white/[0.04] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+              {tag}
+            </span>
+          ))}
         </div>
+      </div>
 
-        {/* Footer CTA */}
-        <div className="px-6 pb-6 pt-2">
-          <a
-            href="#chat-demo"
-            onClick={(e) => { e.preventDefault(); onClose(); document.getElementById("chat-demo")?.scrollIntoView({ behavior: "smooth" }); }}
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-lg text-sm font-display font-bold tracking-wide transition-all duration-300"
-            style={{ color: "#050a15", backgroundColor: "#00e5ff" }}
-          >
+      {/* Footer with "Learn more" link and CTA */}
+      <DialogFooter className="flex flex-row items-center justify-between gap-3 -mx-4 -mb-4 rounded-b-xl border-t border-[var(--border-subtle)] bg-white/[0.02] p-4">
+        <Link
+          href={`/services/${slug}`}
+          className="text-sm text-neon-cyan hover:underline underline-offset-4 transition-colors duration-200"
+          onClick={onClose}
+        >
+          {locale === "zh" ? "详情页面" : "Details Page"} &rarr;
+        </Link>
+        <a
+          href="#chat-demo"
+          onClick={(e) => { e.preventDefault(); onClose(); document.getElementById("chat-demo")?.scrollIntoView({ behavior: "smooth" }); }}
+        >
+          <Button className="gap-2 bg-[#00e5ff] text-[#050a15] hover:bg-[#33ecff] border-transparent text-sm font-display font-bold tracking-wide">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             <span>{locale === "zh" ? "立即咨询" : "Get Started"}</span>
-          </a>
-        </div>
-      </motion.div>
-    </motion.div>
+          </Button>
+        </a>
+      </DialogFooter>
+    </>
   );
 }
 
@@ -311,6 +312,7 @@ export default function ServicesSection() {
                     hover:-translate-y-1
                     ${glowBorder}
                   `}
+                  onClick={() => setSelectedService(i)}
                 >
                   <div className="relative p-6 lg:p-8 flex flex-col gap-5 h-full">
                     {/* Top row: number + icon */}
@@ -348,10 +350,7 @@ export default function ServicesSection() {
                     </div>
 
                     {/* Learn more */}
-                    <button
-                      onClick={() => setSelectedService(i)}
-                      className="flex items-center gap-2 mt-auto"
-                    >
+                    <div className="flex items-center gap-2 mt-auto">
                       <span className="text-sm text-text-muted group-hover:text-neon-cyan transition-colors duration-200">
                         {t.services.learnMore}
                       </span>
@@ -369,7 +368,7 @@ export default function ServicesSection() {
                         <line x1="5" y1="12" x2="19" y2="12" />
                         <polyline points="12 5 19 12 12 19" />
                       </svg>
-                    </button>
+                    </div>
 
                     {/* Hover glow line at top (faux border glow overlay) */}
                     <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-cyan/0 to-transparent group-hover:via-neon-cyan/60 transition-all duration-500" />
@@ -388,9 +387,10 @@ export default function ServicesSection() {
             viewport={viewportOnce}
             className="flex justify-center mt-14"
           >
-            <button
+            <Button
+              variant="outline"
               onClick={() => setExpanded((prev) => !prev)}
-              className="group flex items-center gap-3 px-7 py-3.5 rounded-lg border border-border-strong bg-white/[0.02] text-text-secondary hover:text-neon-cyan hover:border-neon-cyan/30 hover:bg-white/[0.04] transition-all duration-300"
+              className="group flex items-center gap-3 px-7 py-3.5 rounded-lg border-[var(--border-strong)] bg-white/[0.02] text-[var(--text-secondary)] hover:text-neon-cyan hover:border-neon-cyan/30 hover:bg-white/[0.04] transition-all duration-300"
             >
               <span className="font-mono text-sm tracking-wide">
                 {expanded
@@ -415,21 +415,28 @@ export default function ServicesSection() {
               >
                 <polyline points="6 9 12 15 18 9" />
               </motion.svg>
-            </button>
+            </Button>
           </motion.div>
         )}
       </div>
 
-      {/* Service detail modal */}
-      <AnimatePresence>
+      {/* Service detail dialog -- shadcn Dialog */}
+      <Dialog
+        open={selectedService !== null}
+        onOpenChange={(open) => { if (!open) setSelectedService(null); }}
+      >
         {selectedService !== null && (
-          <ServiceModal
-            service={t.services.items[selectedService]}
-            index={selectedService}
-            onClose={() => setSelectedService(null)}
-          />
+          <DialogContent
+            className="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)]/95 backdrop-blur-xl shadow-2xl text-[var(--text-primary)] sm:max-w-lg"
+          >
+            <ServiceDialogContent
+              service={t.services.items[selectedService]}
+              index={selectedService}
+              onClose={() => setSelectedService(null)}
+            />
+          </DialogContent>
         )}
-      </AnimatePresence>
+      </Dialog>
     </section>
   );
 }
