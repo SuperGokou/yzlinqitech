@@ -82,7 +82,7 @@ Open [http://localhost:3000](http://localhost:3000)
 |----------|:--------:|---------|-------------|
 | `DEEPSEEK_API_KEY` | Yes | — | DeepSeek API key for AI chatbot |
 | `DEEPSEEK_MODEL` | No | `deepseek-chat` | Model name |
-| `NEXT_PUBLIC_SITE_URL` | No | `https://lingqitech.com` | Production URL |
+| `NEXT_PUBLIC_SITE_URL` | No | `https://yzlinqitech.vercel.app` | Production URL |
 
 ---
 
