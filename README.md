@@ -6,7 +6,7 @@
 <p align="center"><strong>AI-Powered Software Factory</strong></p>
 
 <p align="center">
-  <a href="https://lingqitech.com"><img src="https://img.shields.io/badge/Website-lingqitech.com-00e5ff?style=for-the-badge&logo=vercel&logoColor=white" alt="Website" /></a>
+  <a href="https://yzlinqitech.vercel.app"><img src="https://img.shields.io/badge/Website-lingqitech.com-00e5ff?style=for-the-badge&logo=vercel&logoColor=white" alt="Website" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge" alt="License" /></a>
 </p>
 
